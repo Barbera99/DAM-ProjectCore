@@ -16,16 +16,26 @@ services:
       MYSQL_DATABASE: dev-test
       MYSQL_USER: dev-user
       MYSQL_PASSWORD: 1234
-
+  
     ports:
       - 3306:3306
     cap_add:
       - SYS_NICE  # CAP_SYS_NIC
 
+
+  adminer_container:
+      image: adminer:latest
+      environment:
+        ADMINER_DEFAULT_SERVER: mysql_db_container
+      ports:
+        - 8080:8080
   backend:
-    build: "./backend"
+    build: 
+      context: "./backend"
     ports:
-      - "8000:8000"  
+      - "8000:8000"
+    environment:
+      - DAMCore_DB_HOST=mysql_db_container
     volumes:
       - ../../DAM-ProjectCore/.:/app
       - ../../static/.:/static
@@ -35,21 +45,7 @@ services:
       - mysql_db_container
     depends_on:
       - mysql_db_container
-    command: sh -c "/wait && /sayhello"
-    environment:
-      - DAMCore_DB_HOST=mysql_db_container
-      - WAIT_HOSTS=mysql_db_container:3306
-      - WAIT_HOSTS_TIMEOUT=300
-      - WAIT_SLEEP_INTERVAL=30
-      - WAIT_HOST_CONNECT_TIMEOUT=30
 
-
-  adminer_container:
-      image: adminer:latest
-      environment:
-        ADMINER_DEFAULT_SERVER: mysql_db_container
-      ports:
-        - 8080:8080
 
 
 
