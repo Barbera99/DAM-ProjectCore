@@ -50,109 +50,54 @@ def _generate_media_path(class_instance, class_attibute_name):
     return class_path
 
 
+# Enums
 class GenereEnum(enum.Enum):
     male = "M"
     female = "F"
 
 
-class EventTypeEnum(enum.Enum):
-    hackathon = "H"
-    lanparty = "LP"
-    livecoding = "LC"
+class CategoryEnum(enum.Enum):
+    legendary = "L"
+    epic = "E"
+    rare = "R"
+    common = "C"
 
+# Taules intermèdies de les relacions N a N.
+User_Achievements = Table("User_Achievements", SQLAlchemyBase.metadata,
+                          Column("achievement_id", Integer,
+                                 ForeignKey("achievements.id", onupdate="CASCADE", ondelete="CASCADE"),
+                                 nullable=False),
+                          Column("user_id", Integer,
+                                 ForeignKey("users.id", onupdate="CASCADE", ondelete="CASCADE"),
+                                 nullable=False),
+                          )
 
-class EventStatusEnum(enum.Enum):
-    open = "O"
-    closed = "C"
-    ongoing = "G"
-    undefined = "U"
+Games_Maps = Table("Games_Maps", SQLAlchemyBase.metadata,
+                   Column("id_game", Integer,
+                          ForeignKey("games.id", onupdate="CASCADE", ondelete="CASCADE"),
+                          nullable=False),
+                   Column("id_map", Integer,
+                          ForeignKey("maps.id", onupdate="CASCADE", ondelete="CASCADE"),
+                          nullable=False),
+                   )
 
+User_Cards = Table("User_Cards", SQLAlchemyBase.metadata,
+                   Column("id_user", Integer,
+                          ForeignKey("users.id", onupdate="CASCADE", ondelete="CASCADE"),
+                          nullable=False),
+                   Column("id_card", Integer,
+                          ForeignKey("cards.id", onupdate="CASCADE", ondelete="CASCADE"),
+                          nullable=False),
+                   )
 
-EventParticipantsAssociation = Table("event_participants_association", SQLAlchemyBase.metadata,
-                                     Column("event_id", Integer,
-                                            ForeignKey("events.id", onupdate="CASCADE", ondelete="CASCADE"),
-                                            nullable=False),
-                                     Column("user_id", Integer,
-                                            ForeignKey("users.id", onupdate="CASCADE", ondelete="CASCADE"),
-                                            nullable=False),
-                                     )
-
-
-class Event(SQLAlchemyBase, JSONModel):
-    __tablename__ = "events"
-
-    id = Column(Integer, primary_key=True)
-    created_at = Column(DateTime, default=datetime.datetime.now, nullable=False)
-    name = Column(Unicode(255), nullable=False)
-    description = Column(UnicodeText)
-    type = Column(Enum(EventTypeEnum))
-    poster = Column(Unicode(255))
-    start_date = Column(DateTime, nullable=False)
-    finish_date = Column(DateTime, nullable=False)
-    owner_id = Column(Integer, ForeignKey("users.id", onupdate="CASCADE", ondelete="CASCADE"), nullable=False)
-    owner = relationship("User", back_populates="events_owner")
-    registered = relationship("User", secondary=EventParticipantsAssociation, back_populates="events_enrolled")
-
-    @hybrid_property
-    def poster_url(self):
-        return _generate_media_url(self, "poster", default_image=True)
-
-    @hybrid_property
-    def poster_path(self):
-        return _generate_media_path(self, "poster")
-
-    @hybrid_property
-    def status(self):
-        current_datetime = datetime.datetime.now()
-        if current_datetime < self.start_date:
-            return EventStatusEnum.open
-        elif (current_datetime >= self.start_date) and (current_datetime <= self.finish_date):
-            return EventStatusEnum.ongoing
-        elif current_datetime > self.finish_date:
-            return EventStatusEnum.closed
-        else:
-            return EventStatusEnum.undefined
-
-    @status.expression
-    def status(cls):
-        current_datetime = datetime.datetime.now()
-        return case(
-            [
-                (current_datetime < cls.start_date,
-                 type_coerce(EventStatusEnum.open, Enum(EventStatusEnum))),
-                (and_(current_datetime > cls.start_date, current_datetime < cls.finish_date),
-                 type_coerce(EventStatusEnum.ongoing, Enum(EventStatusEnum))),
-                (current_datetime > cls.finish_date,
-                 type_coerce(EventStatusEnum.closed, Enum(EventStatusEnum))),
-            ],
-            else_=type_coerce(EventStatusEnum.undefined, Enum(EventStatusEnum))
-        )
-
-    @hybrid_property
-    def json_model(self):
-        return {
-            "id": self.id,
-            "created_at": self.created_at.strftime(settings.DATETIME_DEFAULT_FORMAT),
-            "name": self.name,
-            "description": self.description,
-            "poster_url": self.poster_url,
-            "type": self.type.value,
-            "start_date": self.start_date.strftime(settings.DATETIME_DEFAULT_FORMAT),
-            "finish_date": self.finish_date.strftime(settings.DATETIME_DEFAULT_FORMAT),
-            "owner": self.owner.username,
-            "registered": [enrolled.username for enrolled in self.registered],
-            "status": self.status.value
-        }
-
-
+# Classes i JSON de la nostra BDD.
 class UserToken(SQLAlchemyBase):
     __tablename__ = "users_tokens"
 
     id = Column(Integer, primary_key=True)
     token = Column(Unicode(50), nullable=False, unique=True)
     user_id = Column(Integer, ForeignKey("users.id", onupdate="CASCADE", ondelete="CASCADE"), nullable=False)
-    user = relationship("User", back_populates="tokens")
-
+    tokens_user  = relationship("User", back_populates="user_tokens")
 
 class User(SQLAlchemyBase, JSONModel):
     __tablename__ = "users"
@@ -162,15 +107,31 @@ class User(SQLAlchemyBase, JSONModel):
     username = Column(Unicode(50), nullable=False, unique=True)
     password = Column(UnicodeText, nullable=False)
     email = Column(Unicode(255), nullable=False)
-    tokens = relationship("UserToken", back_populates="user", cascade="all, delete-orphan")
     name = Column(Unicode(50), nullable=False)
     surname = Column(Unicode(50), nullable=False)
     birthdate = Column(Date)
     genere = Column(Enum(GenereEnum), nullable=False)
     phone = Column(Unicode(50))
     photo = Column(Unicode(255))
-    events_owner = relationship("Event", back_populates="owner", cascade="all, delete-orphan")
-    events_enrolled = relationship("Event", back_populates="registered")
+    rank_id = Column(Integer, ForeignKey("ranks.id", onupdate="CASCADE", ondelete="CASCADE"), nullable=False)
+
+    # Relació 1 a N entre Rank i Users
+    users_rank = relationship("Rank", back_populates="rank_users")
+
+    # Relació 1 a N entre User i UserToken.
+    user_tokens = relationship("UserToken", back_populates="tokens_user", cascade="all, delete-orphan")
+
+    # Relació 1 a 1 entre User i Stats.
+    user_stats = relationship("Stats", uselist=False, back_populates="stats_user")
+
+    # Relació N a N entre User i Achievements.
+    users_achievements = relationship("Achievement", secondary="User_Achievements", back_populates="achievements_users")
+
+    # Relació 1 a N entre User i Deck.
+    user_decks = relationship("Deck", back_populates="decks_user", cascade="all, delete-orphan")
+
+    # Relació N a N entre User i Card.
+    user_card = relationship("Card", secondary=User_Cards)
 
     @hybrid_property
     def public_profile(self):
@@ -219,4 +180,168 @@ class User(SQLAlchemyBase, JSONModel):
             "genere": self.genere.value,
             "phone": self.phone,
             "photo": self.photo_url
+        }
+
+class Rank(SQLAlchemyBase, JSONModel):
+    __tablename__ = "ranks"
+    id = Column(Integer, primary_key=True)
+    league = Column(Unicode(50), nullable=False, unique=True)
+    min_medals = Column(Integer, nullable=False)
+    max_medals = Column(Integer, nullable=False)
+
+    # Relació 1 a N entre Rank i Users 
+    rank_users = relationship("User", back_populates="users_rank",cascade="all, delete-orphan")
+
+    @hybrid_property
+    def json_model(self):
+        return {
+            "league": self.league,
+            "min_medals": self.min_medals,
+            "max_medals": self.max_medals
+        }
+
+class Stats(SQLAlchemyBase, JSONModel):
+    __tablename__ = "stats"
+    id = Column(Integer, primary_key=True)
+    games_Played = Column(Integer, nullable=False)
+    ranked_Wins = Column(Integer, nullable=False)
+    ranked_Defeats = Column(Integer, nullable=False)
+    normal_Wins = Column(Integer, nullable=False)
+    normal_Defeats = Column(Integer, nullable=False)
+    level = Column(Integer, nullable=False)
+    medals = Column(Integer, nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id", onupdate="CASCADE", ondelete="CASCADE"))
+
+    # Relació 1 a 1 entre User i Stats.
+    stats_user = relationship("User", back_populates="user_stats")
+
+    @hybrid_property
+    def json_model(self):
+        return {
+            "games_Played": self.games_Played,
+            "ranked_Wins": self.ranked_Wins,
+            "normal_Wins": self.normal_Wins,
+            "normal_Defeats": self.normal_Defeats,
+            "level": self.level,
+            "medals": self.medals,
+            "user_id": self.user_id
+        }
+
+class Achievement(SQLAlchemyBase, JSONModel):
+    __tablename__ = "achievements"
+    id = Column(Integer, primary_key=True)
+    name = Column(Integer, nullable=False)
+    description = Column(Integer, nullable=False)
+    type = Column(Integer, nullable=False)
+    difficulty = Column(Integer, nullable=False)
+
+    # Relació N a N entre Users i Achievements.
+    achievements_users = relationship("User", secondary="User_Achievements", back_populates="users_achievements")
+
+    @hybrid_property
+    def json_model(self):
+        return {
+            "name": self.name,
+            "description": self.description,
+            "type": self.type,
+            "difficulty": self.difficulty,
+        }
+
+class Deck(SQLAlchemyBase, JSONModel):
+    __tablename__ = "deck"
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey("users.id", onupdate="CASCADE", ondelete="CASCADE"), nullable=False)
+    id_card_1 = Column(Integer, ForeignKey("cards.id", onupdate="CASCADE", ondelete="CASCADE"), unique=True, nullable=False)
+    id_card_2 = Column(Integer, ForeignKey("cards.id", onupdate="CASCADE", ondelete="CASCADE"), unique=True, nullable=False)
+    id_card_3 = Column(Integer, ForeignKey("cards.id", onupdate="CASCADE", ondelete="CASCADE"), unique=True, nullable=False)
+    id_card_4 = Column(Integer, ForeignKey("cards.id", onupdate="CASCADE", ondelete="CASCADE"), unique=True, nullable=False)
+    id_card_5 = Column(Integer, ForeignKey("cards.id", onupdate="CASCADE", ondelete="CASCADE"), unique=True, nullable=False)
+
+    # Relació N a 1 entre Deck i User.
+    decks_user = relationship("User", back_populates="user_decks")
+
+    # Relació N a 1 entre Deck i Card
+    decks_card = relationship("Card", foreign_keys=[id_card_1,id_card_2,id_card_3,id_card_4,id_card_5])
+
+    @hybrid_property
+    def json_model(self):
+        return {
+            "user_id": self.user_id,
+            "id_card_1": self.id_card_1,
+            "id_card_2": self.id_card_2,
+            "id_card_3": self.id_card_3,
+            "id_card_4": self.id_card_4,
+            "id_card_5": self.id_card_5
+        }
+
+class Card(SQLAlchemyBase, JSONModel):
+    __tablename__ = "cards"
+    id = Column(Integer, primary_key=True)
+    name = Column(Integer, nullable=False)
+    strength = Column(Integer, nullable=False)
+    speed = Column(Integer, nullable=False)
+    agility = Column(Integer, nullable=False)
+    endurance = Column(Integer, nullable=False)
+    intelligence = Column(Integer, nullable=False)
+    category = Column(Enum(CategoryEnum), nullable=False)
+
+    # Relació 1 a N entre Card i Deck.
+    #card_decks = relationship("Deck", back_populates="deck_cards", cascade="all, delete-orphan")
+    
+    # Relació N a N entre Card i User.
+    card_user = relationship("User", secondary="User_Cards", back_populates="user_card")
+
+    @hybrid_property
+    def json_model(self):
+        return {
+            "name": self.name,
+            "strength": self.strength,
+            "speed": self.speed,
+            "agility": self.agility,
+            "endurance": self.endurance,
+            "intelligence": self.intelligence,
+            "category": self.category
+        }
+
+class Game(SQLAlchemyBase, JSONModel):
+    __tablename__ = "games"
+    id = Column(Integer, primary_key=True)
+    player_id_1 = Column(Integer, ForeignKey("users.id", onupdate="CASCADE", ondelete="CASCADE"), nullable=False)
+    player_id_2 = Column(Integer, ForeignKey("users.id", onupdate="CASCADE", ondelete="CASCADE"), nullable=False)
+    score_player_1 = Column(Integer, nullable=False)
+    score_player_2 = Column(Integer, nullable=False)
+    date = Column(DateTime, nullable=False)
+
+    # Relació N a N entre Games i Maps.
+    games_maps = relationship("Map", secondary=Games_Maps, back_populates="maps_games")
+
+    # Relació 1 a N entre Games i Users
+    games_users = relationship("User", back_populates="games", cascade="all,delete-orphan")
+
+    @hybrid_property
+    def json_model(self):
+        return {
+            "player_id_1": self.player_id_1,
+            "player_id_2": self.player_id_2,
+            "score_player_1": self.score_player_1,
+            "score_player_2": self.score_player_2,
+            "date": self.date
+        }
+
+class Map(SQLAlchemyBase, JSONModel):
+    __tablename__ = "maps"
+    id = Column(Integer, primary_key=True)
+    name = Column(Unicode(50), nullable=False)
+    attribute = Column(Unicode(50), nullable=False)
+    extra_attribute = Column(Unicode(50), nullable=True)
+
+    # Relació N a N entre Maps i Games.
+    maps_games = relationship("Game", back_populates="games_maps", cascade="all, delete-orphan")
+
+    @hybrid_property
+    def json_model(self):
+        return {
+            "name": self.name,
+            "attribute": self.attribute,
+            "extra_attribute": self.extra_attribute,
         }
