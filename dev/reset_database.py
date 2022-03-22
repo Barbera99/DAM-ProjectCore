@@ -9,7 +9,7 @@ from sqlalchemy.sql import text
 
 import db
 import settings
-from db.models import SQLAlchemyBase, User, GenereEnum, UserToken, Rank, Stats, Achievement, Deck, Card, Game, Map, CategoryEnum, Games_Maps, User_Achievements, User_Cards
+from db.models import SQLAlchemyBase, User, GenereEnum, UserToken, Rank, Stats, Achievement, Deck, Card, Game, Map, CategoryEnum, Games_Map, User_Achievement, User_Card
 from settings import DEFAULT_LANGUAGE
 
 # LOGGING
@@ -33,9 +33,9 @@ if __name__ == "__main__":
 
     # -------------------- REMOVE AND CREATE TABLES --------------------
     mylogger.info("Removing database...")
-   # SQLAlchemyBase.metadata.drop_all(db.DB_ENGINE)
+    # SQLAlchemyBase.metadata.drop_all(db.DB_ENGINE)
     mylogger.info("Creating database...")
-    SQLAlchemyBase.metadata.create_all(db.DB_ENGINE)
+    # SQLAlchemyBase.metadata.create_all(db.DB_ENGINE)
 
 
  # -------------------- CREATE USERS --------------------
@@ -51,10 +51,11 @@ if __name__ == "__main__":
         birthdate=datetime.datetime(1989, 1, 1),
         genere=GenereEnum.male,
         phone=678954327,
-        photo="foto_perfil_1.png"
+        photo="foto_perfil_1.png",
+        rank_id=1
     )
     user_1.set_password("a1s2d3f4")
-    user_1.tokens.append(UserToken(token="656e50e154865a5dc469b80437ed2f963b8f58c8857b66c9bf"))
+    #user_1.tokens.append(UserToken(token="656e50e154865a5dc469b80437ed2f963b8f58c8857b66c9bf"))
 
     # noinspection PyArgumentList
     user_2 = User(
@@ -66,10 +67,12 @@ if __name__ == "__main__":
         birthdate=datetime.datetime(2017, 1, 1),
         genere=GenereEnum.male,
         phone=687324521,
-        photo="foto_perfil_2.png"
+        photo="foto_perfil_2.png",
+        rank_id=1
+
     )
     user_2.set_password("r45tgt")
-    user_2.tokens.append(UserToken(token="0a821f8ce58965eadc5ef884cf6f7ad99e0e7f58f429f584b2"))
+    #user_2.tokens.append(UserToken(token="0a821f8ce58965eadc5ef884cf6f7ad99e0e7f58f429f584b2"))
 
     
     # -------------------- CREATE RANKS --------------------
@@ -83,7 +86,7 @@ if __name__ == "__main__":
     # -------------------- CREATE STATS --------------------
     mylogger.info("Creating default stats...")
     stats = Stats(
-        games_played=25,
+        games_Played=25,
         ranked_Wins=10,
         ranked_Defeats=5,
         normal_Wins=5,
@@ -95,7 +98,7 @@ if __name__ == "__main__":
 
     # -------------------- CREATE ACHIEVEMENTS --------------------
     mylogger.info("Creating default achievements...")
-    achievements = Achievements(
+    achievements = Achievement(
         name="Champion",
         description="Aconseguir muntar de lliga.",
         type="",
@@ -106,11 +109,11 @@ if __name__ == "__main__":
     mylogger.info("Creating default deck...")
     deck = Deck(
         user_id=1,
-        id_card_1=1,
-        id_card_2=2,
-        id_card_3=3,
-        id_card_4=4,
-        id_card_5=5
+        id_card_1=11,
+        id_card_2=12,
+        id_card_3=13,
+        id_card_4=14,
+        id_card_5=15
     )
     
     # -------------------- CREATE CARDS --------------------
@@ -176,7 +179,7 @@ if __name__ == "__main__":
         player_id_2 = 2,
         score_player_1 = 34,
         score_player_2 = 35,
-        Date = datetime.datetime.now()
+        date = datetime.datetime.now()
     )
 
     # -------------------- CREATE MAP --------------------
@@ -188,42 +191,43 @@ if __name__ == "__main__":
     )
 
     # -------------------- CREATE User_Cards --------------------
-    mylogger.info("Creating default user_cards...")
-    user_cards = User_Cards(
-        id_user = 1,
-        id_card = 1 ,
-    )
+    # mylogger.info("Creating default user_cards...")
+    # user_cards = User_Card(
+    #     id_user = 1,
+    #     id_card = 1
+    # )
 
     # -------------------- CREATE Game_Maps --------------------
-    mylogger.info("Creating default game_maps...")
-    games_maps = Games_Maps(
-        id_game = 1,
-        id_map = 1
-    )
+    # mylogger.info("Creating default game_maps...")
+    # games_maps = Games_Map(
+    #     id_game = 1,
+    #     id_map = 1
+    # )
 
     # -------------------- CREATE User_Cards --------------------
-    mylogger.info("Creating default user_cards...")
-    user_achievements = User_Achievements(
-        id_user = 1,
-        achievement_id = 1 ,
-    )
+    # mylogger.info("Creating default user_cards...")
+    # user_achievements = User_Achievement(
+    #     id_user = 1,
+    #     achievement_id = 1
+    # )
 
 
     # ---------------- AFEGIR LES DADES EN ORDRE DEGUT A LES RELACIONS -------------- #
-    db_session.add(rank)
-    db_session.add(user_1)
-    db_session.add(user_2)
-    db_session.add(stats)
-    db_session.add(card_1)
-    db_session.add(card_2)
-    db_session.add(card_3)
-    db_session.add(card_4)
-    db_session.add(card_5)  
-    db_session.add(deck)
-    db_session.add(game)
-    db.session.add(user_cards)
-    db.session.add(games_maps)
-    db.session.add(user_achievements)
+    mylogger.info("Iseritn dades")
+    # db_session.add(rank)
+    # db_session.add(user_1)
+    # db_session.add(user_2)
+    # db_session.add(stats)
+    #db_session.add(card_1)
+    #db_session.add(card_2)
+    #db_session.add(card_3)
+    #db_session.add(card_4)
+    #db_session.add(card_5)
+    #db_session.add(deck)
+    #db_session.add(game)
+    #db.session.add(user_cards)
+    #db.session.add(games_maps)
+    #db.session.add(user_achievements)
 
     db_session.commit()
     db_session.close()
