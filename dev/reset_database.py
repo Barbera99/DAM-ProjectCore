@@ -33,9 +33,9 @@ if __name__ == "__main__":
 
     # -------------------- REMOVE AND CREATE TABLES --------------------
     mylogger.info("Removing database...")
-    # SQLAlchemyBase.metadata.drop_all(db.DB_ENGINE)
+    SQLAlchemyBase.metadata.drop_all(db.DB_ENGINE)
     mylogger.info("Creating database...")
-    # SQLAlchemyBase.metadata.create_all(db.DB_ENGINE)
+    SQLAlchemyBase.metadata.create_all(db.DB_ENGINE)
 
 
  # -------------------- CREATE USERS --------------------
@@ -214,17 +214,17 @@ if __name__ == "__main__":
 
     # ---------------- AFEGIR LES DADES EN ORDRE DEGUT A LES RELACIONS -------------- #
     mylogger.info("Iseritn dades")
-    # db_session.add(rank)
-    # db_session.add(user_1)
-    # db_session.add(user_2)
-    # db_session.add(stats)
-    #db_session.add(card_1)
-    #db_session.add(card_2)
-    #db_session.add(card_3)
-    #db_session.add(card_4)
-    #db_session.add(card_5)
-    #db_session.add(deck)
-    #db_session.add(game)
+    db_session.add(rank)
+    db_session.add(user_1)
+    db_session.add(user_2)
+    db_session.add(stats)
+    db_session.add(card_1)
+    db_session.add(card_2)
+    db_session.add(card_3)
+    db_session.add(card_4)
+    db_session.add(card_5)
+    db_session.add(deck)
+    db_session.add(game)
     #db.session.add(user_cards)
     #db.session.add(games_maps)
     #db.session.add(user_achievements)
