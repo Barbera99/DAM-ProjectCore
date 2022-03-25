@@ -81,22 +81,64 @@ Games_Map = Table("Games_Maps", SQLAlchemyBase.metadata,
                    )
 
 User_Card = Table("User_Cards", SQLAlchemyBase.metadata,
-                   Column("id_user", Integer,
+                    Column("id_user", Integer,
                           ForeignKey("users.id", onupdate="CASCADE", ondelete="CASCADE"),
                           nullable=False),
-                   Column("id_card", Integer,
+                    Column("id_card", Integer,
                           ForeignKey("cards.id", onupdate="CASCADE", ondelete="CASCADE"),
-                          nullable=False),
+                          nullable=False)
                    )
 
-# Classes i JSON de la nostra BDD.
-class UserToken(SQLAlchemyBase):
-    __tablename__ = "users_tokens"
 
+Deck_Card_Association = Table("Deck_Card_Association", SQLAlchemyBase.metadata,
+                    Column("id_deck", Integer,
+                          ForeignKey("deck.id", onupdate="CASCADE", ondelete="CASCADE"),
+                          nullable=False),
+                    Column("id_card", Integer,
+                          ForeignKey("cards.id", onupdate="CASCADE", ondelete="CASCADE"),
+                          nullable=False)
+                   )            
+                   
+
+class User_Game_Association(SQLAlchemyBase, JSONModel):
+    __tablename__ = "user_game_association"
+    #id = Column(Integer, primary_key=True)
+    score = Column(Integer)
+    user_id = Column(Integer, ForeignKey("users.id", onupdate="CASCADE", ondelete="CASCADE"), nullable=False, primary_key = True)
+    user_association_game  = relationship("User", back_populates="user_games")
+
+    game_id = Column(Integer, ForeignKey("games.id", onupdate="CASCADE", ondelete="CASCADE"), nullable=False, primary_key = True)
+    game_association_user = relationship("Game", back_populates="games_user")
+    
+
+class Game(SQLAlchemyBase, JSONModel):
+    __tablename__ = "games"
     id = Column(Integer, primary_key=True)
-    token = Column(Unicode(50), nullable=False, unique=True)
-    user_id = Column(Integer, ForeignKey("users.id", onupdate="CASCADE", ondelete="CASCADE"), nullable=False)
-    tokens_user  = relationship("User", back_populates="user_tokens")
+    date = Column(DateTime, nullable=False)
+
+    # Relacio N a N entre Games i User_Games_Association
+    games_user = relationship("User_Game_Association", back_populates="game_association_user", cascade="all, delete-orphan")
+
+
+    # Relació N a N entre Games i Maps.
+    games_maps = relationship("Map", secondary=Games_Map, back_populates="maps_games")
+
+    # Relació 1 a N entre Games i Users
+    #games_users = relationship("User", foreign_keys=[player_id_1,player_id_2])
+
+
+    # TODO: Modifiqueu aquest part amb els nous canvis
+    '''@hybrid_property
+    def json_model(self):
+        return {
+            "player_id_1": self.player_id_1,
+            "player_id_2": self.player_id_2,
+            "score_player_1": self.score_player_1,
+            "score_player_2": self.score_player_2,
+            "date": self.date
+        }'''
+
+
 
 class User(SQLAlchemyBase, JSONModel):
     __tablename__ = "users"
@@ -113,13 +155,14 @@ class User(SQLAlchemyBase, JSONModel):
     phone = Column(Unicode(50))
     photo = Column(Unicode(255))
     rank_id = Column(Integer, ForeignKey("ranks.id", onupdate="CASCADE", ondelete="CASCADE"), nullable=False)
+    #games_enrolled = relationship("Game", back_populates="players")
 
     # Relació 1 a N entre Rank i Users
     users_rank = relationship("Rank", back_populates="rank_users")
 
     # Relació 1 a N entre User i UserToken.
     user_tokens = relationship("UserToken", back_populates="tokens_user", cascade="all, delete-orphan")
-
+    
     # Relació 1 a 1 entre User i Stats.
     user_stats = relationship("Stats", uselist=False, back_populates="stats_user")
 
@@ -132,8 +175,8 @@ class User(SQLAlchemyBase, JSONModel):
     # Relació N a N entre User i Card.
     user_card = relationship("Card", secondary=User_Card)
 
-    # Relació N a 1 entre User i Game
-    user_games = relationship("Game", back_populates="games_users")
+    # Relació N a N entre User i Game
+    user_games = relationship("User_Game_Association", back_populates="user_association_game", cascade="all, delete-orphan")
 
     @hybrid_property
     def public_profile(self):
@@ -183,6 +226,15 @@ class User(SQLAlchemyBase, JSONModel):
             "phone": self.phone,
             "photo": self.photo_url
         }
+
+# Classes i JSON de la nostra BDD.
+class UserToken(SQLAlchemyBase):
+    __tablename__ = "users_tokens"
+
+    id = Column(Integer, primary_key=True)
+    token = Column(Unicode(50), nullable=False, unique=True)
+    user_id = Column(Integer, ForeignKey("users.id", onupdate="CASCADE", ondelete="CASCADE"), nullable=False)
+    tokens_user  = relationship("User", back_populates="user_tokens")
 
 class Rank(SQLAlchemyBase, JSONModel):
     __tablename__ = "ranks"
@@ -253,27 +305,20 @@ class Deck(SQLAlchemyBase, JSONModel):
     __tablename__ = "deck"
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey("users.id", onupdate="CASCADE", ondelete="CASCADE"), nullable=False)
-    id_card_1 = Column(Integer, ForeignKey("cards.id", onupdate="CASCADE", ondelete="CASCADE"),nullable=False)
-    id_card_2 = Column(Integer, ForeignKey("cards.id", onupdate="CASCADE", ondelete="CASCADE"),nullable=False)
-    id_card_3 = Column(Integer, ForeignKey("cards.id", onupdate="CASCADE", ondelete="CASCADE"),nullable=False)
-    id_card_4 = Column(Integer, ForeignKey("cards.id", onupdate="CASCADE", ondelete="CASCADE"),nullable=False)
-    id_card_5 = Column(Integer, ForeignKey("cards.id", onupdate="CASCADE", ondelete="CASCADE"),nullable=False)
+    created_at = Column(DateTime, default=datetime.datetime.now, nullable=False)
+
 
     # R#elació N a 1 entre Deck i User.
     decks_user = relationship("User", back_populates="user_decks")
 
-    # Relació N a 1 entre Deck i Card
-    decks_card = relationship("Card", foreign_keys=[id_card_1,id_card_2,id_card_3,id_card_4,id_card_5])
+    # Relació N a N entre Deck i Card
+    deck_card = relationship("Card", secondary="Deck_Card_Association", back_populates="card_deck")
 
     @hybrid_property
     def json_model(self):
         return {
-            "user_id": self.user_id,
-            "id_card_1": self.id_card_1,
-            "id_card_2": self.id_card_2,
-            "id_card_3": self.id_card_3,
-            "id_card_4": self.id_card_4,
-            "id_card_5": self.id_card_5
+            "id": self.id,
+            "user_id": self.user_id
         }
 
 class Card(SQLAlchemyBase, JSONModel):
@@ -288,10 +333,12 @@ class Card(SQLAlchemyBase, JSONModel):
     category = Column(Enum(CategoryEnum), nullable=False)
 
     # Relació 1 a N entre Card i Deck.
-    card_decks = relationship("Deck", back_populates="deck_cards", cascade="all, delete-orphan")
+    #card_decks = relationship("Deck", back_populates="deck_cards", cascade="all, delete-orphan")
     
     # Relació N a N entre Card i User.
     card_user = relationship("User", secondary="User_Cards", back_populates="user_card")
+
+    card_deck = relationship("Deck", secondary="Deck_Card_Association", back_populates="deck_card")
 
     @hybrid_property
     def json_model(self):
@@ -305,32 +352,6 @@ class Card(SQLAlchemyBase, JSONModel):
             "category": self.category
         }
 
-class Game(SQLAlchemyBase, JSONModel):
-    __tablename__ = "games"
-    id = Column(Integer, primary_key=True)
-
-    player_id_1 = Column(Integer, ForeignKey("users.id", onupdate="CASCADE", ondelete="CASCADE"), nullable=False)
-    player_id_2 = Column(Integer, ForeignKey("users.id", onupdate="CASCADE", ondelete="CASCADE"), nullable=False)
-    score_player_1 = Column(Integer, nullable=False)
-    score_player_2 = Column(Integer, nullable=False)
-    date = Column(DateTime, nullable=False)
-
-    # Relació N a N entre Games i Maps.
-    games_maps = relationship("Map", secondary=Games_Map, back_populates="maps_games")
-
-    # Relació 1 a N entre Games i Users
-    games_users = relationship("User", foreign_keys=[player_id_1,player_id_2])
-
-
-    @hybrid_property
-    def json_model(self):
-        return {
-            "player_id_1": self.player_id_1,
-            "player_id_2": self.player_id_2,
-            "score_player_1": self.score_player_1,
-            "score_player_2": self.score_player_2,
-            "date": self.date
-        }
 
 class Map(SQLAlchemyBase, JSONModel):
     __tablename__ = "maps"

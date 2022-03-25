@@ -9,7 +9,7 @@ from sqlalchemy.sql import text
 
 import db
 import settings
-from db.models import SQLAlchemyBase, User, GenereEnum, UserToken, Rank, Stats, Achievement, Deck, Card, Game, Map, CategoryEnum, Games_Map, User_Achievement, User_Card
+from db.models import SQLAlchemyBase, User, GenereEnum, UserToken, Rank, Stats, Achievement, Deck, Card, Game, Map, CategoryEnum, Games_Map, User_Achievement, User_Card, User_Game_Association
 from settings import DEFAULT_LANGUAGE
 
 # LOGGING
@@ -74,7 +74,6 @@ if __name__ == "__main__":
     user_2.set_password("r45tgt")
     #user_2.tokens.append(UserToken(token="0a821f8ce58965eadc5ef884cf6f7ad99e0e7f58f429f584b2"))
 
-    
     # -------------------- CREATE RANKS --------------------
     mylogger.info("Creating default ranks...")
     rank = Rank(
@@ -83,39 +82,50 @@ if __name__ == "__main__":
         max_medals=500
     )
 
-    # -------------------- CREATE STATS --------------------
-    mylogger.info("Creating default stats...")
-    stats = Stats(
-        games_Played=25,
-        ranked_Wins=10,
-        ranked_Defeats=5,
-        normal_Wins=5,
-        normal_Defeats=5,
-        level=5,
-        medals=400,
-        user_id=1
+    # -------------------- CREATE GAME --------------------
+    mylogger.info("Creating default game...")
+    game1 = Game(
+        id = 1,
+        date = datetime.datetime.now(),
+        #owner_id = 0,
+        #players = [user_1, user_2]
     )
 
-    # -------------------- CREATE ACHIEVEMENTS --------------------
-    mylogger.info("Creating default achievements...")
-    achievements = Achievement(
-        name="Champion",
-        description="Aconseguir muntar de lliga.",
-        type="",
-        difficulty=5
+        # -------------------- CREATE GAME --------------------
+    mylogger.info("Creating default game...")
+    game2 = Game(
+        id = 2,
+        date = datetime.datetime.now(),
+        #owner_id = 0,
+        #players = [user_1, user_2]
     )
 
-    # -------------------- CREATE DECK --------------------
-    mylogger.info("Creating default deck...")
-    deck = Deck(
-        user_id=1,
-        id_card_1=11,
-        id_card_2=12,
-        id_card_3=13,
-        id_card_4=14,
-        id_card_5=15
+    # Partida entre user 1 i 2 en un game 1
+    game_user_association1 = User_Game_Association(
+        user_association_game = user_1,
+        game_association_user = game1,
+        score = 90
     )
-    
+
+    game_user_association2 = User_Game_Association(
+        user_association_game = user_2,
+        game_association_user = game1,
+        score = 110
+    )
+
+    # Partida entre user 1 i 2 en un game 2
+    game_user_association3 = User_Game_Association(
+        user_association_game = user_1,
+        game_association_user = game2,
+        score = 90
+    )
+
+    game_user_association4 = User_Game_Association(
+        user_association_game = user_2,
+        game_association_user = game2,
+        score = 110
+    )
+
     # -------------------- CREATE CARDS --------------------
     mylogger.info("Creating default card_1...")
     card_1 = Card(
@@ -172,15 +182,48 @@ if __name__ == "__main__":
         category = CategoryEnum.rare
     )
 
-    # -------------------- CREATE GAME --------------------
-    mylogger.info("Creating default game...")
-    game = Game(
-        player_id_1 = 1,
-        player_id_2 = 2,
-        score_player_1 = 34,
-        score_player_2 = 35,
-        date = datetime.datetime.now()
+    # -------------------- CREATE DECK --------------------
+    mylogger.info("Creating default deck...")
+    deck = Deck(
+        user_id=1,
+        created_at = datetime.datetime.now(),
+        deck_card = [card_1, card_2, card_3, card_4, card_5]
     )
+
+
+    map = Map(
+        name = "Mapa1",
+        attribute ='atrr2',
+        extra_attribute = 'extra_atrtr',
+        maps_games = [game1]
+    )
+
+    '''
+    
+
+
+    # -------------------- CREATE STATS --------------------
+    mylogger.info("Creating default stats...")
+    stats = Stats(
+        games_Played=25,
+        ranked_Wins=10,
+        ranked_Defeats=5,
+        normal_Wins=5,
+        normal_Defeats=5,
+        level=5,
+        medals=400,
+        user_id=1
+    )
+
+    # -------------------- CREATE ACHIEVEMENTS --------------------
+    mylogger.info("Creating default achievements...")
+    achievements = Achievement(
+        name="Champion",
+        description="Aconseguir muntar de lliga.",
+        type="",
+        difficulty=5
+    )
+
 
     # -------------------- CREATE MAP --------------------
     mylogger.info("Creating default map...")
@@ -188,7 +231,7 @@ if __name__ == "__main__":
         name = "Marathon",
         attribute ="speed" ,
         extra_attribute = "endurance"
-    )
+    )'''
 
     # -------------------- CREATE User_Cards --------------------
     # mylogger.info("Creating default user_cards...")
@@ -213,18 +256,30 @@ if __name__ == "__main__":
 
 
     # ---------------- AFEGIR LES DADES EN ORDRE DEGUT A LES RELACIONS -------------- #
-    mylogger.info("Iseritn dades")
-    db_session.add(rank)
+    mylogger.info("Inserint dades")
     db_session.add(user_1)
     db_session.add(user_2)
-    db_session.add(stats)
+    db_session.add(rank)
+    db_session.add(game1)
+    db_session.add(game2)
+    db_session.add(game_user_association1)
+    db_session.add(game_user_association2)
+    db_session.add(game_user_association3)
+    db_session.add(game_user_association4)
     db_session.add(card_1)
     db_session.add(card_2)
     db_session.add(card_3)
     db_session.add(card_4)
     db_session.add(card_5)
     db_session.add(deck)
-    db_session.add(game)
+    db_session.add(map)
+    #db_session.add(game)
+    '''
+    db_session.add(user_1)
+    db_session.add(user_2)
+    db_session.add(stats)
+
+    db_session.add(game)'''
     #db.session.add(user_cards)
     #db.session.add(games_maps)
     #db.session.add(user_achievements)
