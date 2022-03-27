@@ -11,6 +11,8 @@ from falcon_multipart.middleware import MultipartMiddleware
 from resources import account_resources, common_resources, user_resources
 from settings import configure_logging
 
+#S'inicia amb docker-compose up backend
+
 # LOGGING
 mylogger = logging.getLogger(__name__)
 configure_logging()

@@ -44,14 +44,16 @@ class ResourceRegisterUser(DAMCoreResource):
                 aux_genere = GenereEnum(req.media["genere"].upper())
             except ValueError:
                 raise falcon.HTTPBadRequest(description=messages.genere_invalid)
-
-
             aux_user.username = req.media["username"]
-            aux_user.password = req.media["password"]
+            aux_user.password = User.set_password(req.media["password"])
             aux_user.email = req.media["email"]
             aux_user.name = req.media["name"]
             aux_user.surname = req.media["surname"]
+            aux_user.birthdate = req.media["birthdate"]
             aux_user.genere = aux_genere
+            aux_user.rank_id = 1
+            aux_user.phone = req.media["phone"]
+            aux_user.photo = req.media["photo"]
 
             self.db_session.add(aux_user)
 
@@ -64,3 +66,4 @@ class ResourceRegisterUser(DAMCoreResource):
             raise falcon.HTTPBadRequest(description=messages.parameters_invalid)
 
         resp.status = falcon.HTTP_200
+
