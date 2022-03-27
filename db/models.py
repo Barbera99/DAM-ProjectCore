@@ -151,7 +151,7 @@ class User(SQLAlchemyBase, JSONModel):
     name = Column(Unicode(50), nullable=False)
     surname = Column(Unicode(50), nullable=False)
     birthdate = Column(Date)
-    genere = Column(Enum(GenereEnum), nullable=False)
+    genere = Column(Enum(GenereEnum), nullable=True)
     phone = Column(Unicode(50))
     photo = Column(Unicode(255))
     rank_id = Column(Integer, ForeignKey("ranks.id", onupdate="CASCADE", ondelete="CASCADE"), nullable=False)
@@ -183,7 +183,7 @@ class User(SQLAlchemyBase, JSONModel):
         return {
             "created_at": self.created_at.strftime(settings.DATETIME_DEFAULT_FORMAT),
             "username": self.username,
-            "genere": self.genere.value,
+            "birthdate": self.birthdate.strftime("%Y-%m-%d"),
             "photo": self.photo,
         }
 

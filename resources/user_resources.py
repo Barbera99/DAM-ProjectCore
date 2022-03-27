@@ -13,11 +13,12 @@ from db.models import User, GenereEnum
 from hooks import requires_auth
 from resources.base_resources import DAMCoreResource
 from resources.schemas import SchemaRegisterUser
+from datetime import datetime
 
 mylogger = logging.getLogger(__name__)
 
 
-@falcon.before(requires_auth)
+#@falcon.before(requires_auth)
 class ResourceGetUserProfile(DAMCoreResource):
     def on_get(self, req, resp, *args, **kwargs):
         super(ResourceGetUserProfile, self).on_get(req, resp, *args, **kwargs)
@@ -36,31 +37,41 @@ class ResourceRegisterUser(DAMCoreResource):
     @jsonschema.validate(SchemaRegisterUser)
     def on_post(self, req, resp, *args, **kwargs):
         super(ResourceRegisterUser, self).on_post(req, resp, *args, **kwargs)
-
-        aux_user = User()
+        mylogger.info("Creating default users...")
+        user = User()
 
         try:
             try:
                 aux_genere = GenereEnum(req.media["genere"].upper())
             except ValueError:
                 raise falcon.HTTPBadRequest(description=messages.genere_invalid)
-            aux_user.username = req.media["username"]
-            aux_user.password = User.set_password(req.media["password"])
-            aux_user.email = req.media["email"]
-            aux_user.name = req.media["name"]
-            aux_user.surname = req.media["surname"]
-            aux_user.birthdate = req.media["birthdate"]
-            aux_user.genere = aux_genere
-            aux_user.rank_id = 1
-            aux_user.phone = req.media["phone"]
-            aux_user.photo = req.media["photo"]
+            user.username = req.media["username"]
+            user.password = User.set_password(req.media["password"])
+            user.email = req.media["email"]
+            user.name = req.media["name"]
+            user.surname = req.media["surname"]
 
-            self.db_session.add(aux_user)
+            #Arreglar la data algun dia
+            aux = req.media["birthdate"]
+            aux.split("-")
+            date = datetime(int(aux[0]), int(aux[1]), int(aux[2]))
+            #date = datetime.strptime(req.media["birthdate"], '%Y-%m-%d')
+            user.birthdate = date
+
+            #user.genere = aux_genere
+
+            user.rank_id = 1
+            user.phone = req.media["phone"]
+            user.photo = req.media["photo"]
+
+            #mylogger.info(user.username)
+
+            self.db_session.add(user)
 
             try:
                 self.db_session.commit()
             except IntegrityError:
-                raise falcon.HTTPBadRequest(description=messages.user_exists)
+                raise falcon.HTTPBadRequest(description=messages.database_error)
 
         except KeyError:
             raise falcon.HTTPBadRequest(description=messages.parameters_invalid)

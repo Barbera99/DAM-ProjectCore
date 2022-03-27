@@ -108,7 +108,7 @@ if __name__ == "__main__":
 
     # noinspection PyArgumentList
     user_1= User(
-        created_at=datetime.datetime.now(),
+        #created_at=datetime.datetime.now(),
         username="usuari1",
         email="usuari1@gmail.com",
         name="usuari",
@@ -127,7 +127,7 @@ if __name__ == "__main__":
 
     # noinspection PyArgumentList
     user_2 = User(
-        created_at=datetime.datetime.now(),
+        #created_at=datetime.datetime.now(),
         username="usuari2",
         email="user2@gmail.com",
         name="user",
