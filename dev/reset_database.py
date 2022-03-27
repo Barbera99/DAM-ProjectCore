@@ -33,14 +33,79 @@ if __name__ == "__main__":
 
     # -------------------- REMOVE AND CREATE TABLES --------------------
     mylogger.info("Removing database...")
-    SQLAlchemyBase.metadata.drop_all(db.DB_ENGINE)
+    #SQLAlchemyBase.metadata.drop_all(db.DB_ENGINE)
     mylogger.info("Creating database...")
     SQLAlchemyBase.metadata.create_all(db.DB_ENGINE)
+
+# -------------------- CREATE CARDS --------------------
+    mylogger.info("Creating default card_1...")
+    card_1 = Card(
+        name="Lebron",
+        strength=45,
+        speed=34,
+        agility=35,
+        endurance=37,
+        intelligence=48,
+        category=CategoryEnum.legendary
+    )
+
+    mylogger.info("Creating default card_2...")
+    card_2 = Card(
+        name="Curry",
+        strength=30,
+        speed=40,
+        agility=30,
+        endurance=40,
+        intelligence=40,
+        category=CategoryEnum.legendary
+    )
+
+    mylogger.info("Creating default card_3...")
+    card_3 = Card(
+        name="Kevin Durant",
+        strength=30,
+        speed=45,
+        agility=40,
+        endurance=40,
+        intelligence=40,
+        category=CategoryEnum.legendary
+    )
+
+    mylogger.info("Creating default card_4...")
+    card_4 = Card(
+        name="Rajon Rondo",
+        strength=10,
+        speed=45,
+        agility=40,
+        endurance=30,
+        intelligence=45,
+        category=CategoryEnum.epic
+    )
+
+    mylogger.info("Creating default card_5...")
+    card_5 = Card(
+        name="Donovan Mitchell",
+        strength=35,
+        speed=40,
+        agility=40,
+        endurance=30,
+        intelligence=20,
+        category=CategoryEnum.rare
+    )
+
+# -------------------- CREATE ACHIEVEMENTS --------------------
+    mylogger.info("Creating default achievements...")
+    achievement_1 = Achievement(
+        name="Welcome",
+        description="Entrar al joc per primer cop.",
+        type="",
+        difficulty=5
+    )
 
 
  # -------------------- CREATE USERS --------------------
     mylogger.info("Creating default users...")
-   
+
     # noinspection PyArgumentList
     user_1= User(
         created_at=datetime.datetime.now(),
@@ -50,9 +115,12 @@ if __name__ == "__main__":
         surname="1",
         birthdate=datetime.datetime(1989, 1, 1),
         genere=GenereEnum.male,
-        phone=678954327,
+        phone='678954327',
         photo="foto_perfil_1.png",
-        rank_id=1
+        rank_id=1,
+        user_card=[card_1, card_2, card_3, card_4, card_5],
+        users_achievements = [achievement_1]
+
     )
     user_1.set_password("a1s2d3f4")
     #user_1.tokens.append(UserToken(token="656e50e154865a5dc469b80437ed2f963b8f58c8857b66c9bf"))
@@ -66,9 +134,11 @@ if __name__ == "__main__":
         surname="2",
         birthdate=datetime.datetime(2017, 1, 1),
         genere=GenereEnum.male,
-        phone=687324521,
+        phone='687324521',
         photo="foto_perfil_2.png",
-        rank_id=1
+        rank_id=1,
+        user_card=[card_1, card_2, card_3, card_4, card_5],
+        users_achievements=[achievement_1]
 
     )
     user_2.set_password("r45tgt")
@@ -81,23 +151,28 @@ if __name__ == "__main__":
         min_medals=300,
         max_medals=500
     )
+    # -------------------- CREATE MAP --------------------
+    map1 = Map(
+        name="Mapa1",
+        attribute='atrr2',
+        extra_attribute='extra_atrtr',
+
+    )
 
     # -------------------- CREATE GAME --------------------
     mylogger.info("Creating default game...")
     game1 = Game(
         id = 1,
         date = datetime.datetime.now(),
-        #owner_id = 0,
-        #players = [user_1, user_2]
+        games_maps = [map1]
     )
 
-        # -------------------- CREATE GAME --------------------
+    # -------------------- CREATE GAME --------------------
     mylogger.info("Creating default game...")
     game2 = Game(
         id = 2,
         date = datetime.datetime.now(),
-        #owner_id = 0,
-        #players = [user_1, user_2]
+        games_maps = [map1]
     )
 
     # Partida entre user 1 i 2 en un game 1
@@ -126,61 +201,7 @@ if __name__ == "__main__":
         score = 110
     )
 
-    # -------------------- CREATE CARDS --------------------
-    mylogger.info("Creating default card_1...")
-    card_1 = Card(
-        name = "Lebron",
-        strength = 45,
-        speed = 34,
-        agility = 35,
-        endurance = 37,
-        intelligence = 48,
-        category = CategoryEnum.legendary
-    )
 
-    mylogger.info("Creating default card_2...")
-    card_2 = Card(
-        name = "Curry",
-        strength = 30,
-        speed = 40,
-        agility = 30,
-        endurance = 40,
-        intelligence = 40,
-        category = CategoryEnum.legendary
-    )
-
-    mylogger.info("Creating default card_3...")
-    card_3 = Card(
-        name = "Kevin Durant",
-        strength = 30,
-        speed = 45,
-        agility = 40,
-        endurance = 40,
-        intelligence = 40,
-        category = CategoryEnum.legendary
-    )
-
-    mylogger.info("Creating default card_4...")
-    card_4 = Card(
-        name = "Rajon Rondo",
-        strength = 10,
-        speed = 45,
-        agility = 40,
-        endurance = 30,
-        intelligence = 45,
-        category = CategoryEnum.epic
-    )
-
-    mylogger.info("Creating default card_5...")
-    card_5 = Card(
-        name = "Donovan Mitchell",
-        strength = 35,
-        speed = 40,
-        agility = 40,
-        endurance = 30,
-        intelligence = 20,
-        category = CategoryEnum.rare
-    )
 
     # -------------------- CREATE DECK --------------------
     mylogger.info("Creating default deck...")
@@ -189,17 +210,6 @@ if __name__ == "__main__":
         created_at = datetime.datetime.now(),
         deck_card = [card_1, card_2, card_3, card_4, card_5]
     )
-
-
-    map = Map(
-        name = "Mapa1",
-        attribute ='atrr2',
-        extra_attribute = 'extra_atrtr',
-        maps_games = [game1]
-    )
-
-    '''
-    
 
 
     # -------------------- CREATE STATS --------------------
@@ -212,16 +222,7 @@ if __name__ == "__main__":
         normal_Defeats=5,
         level=5,
         medals=400,
-        user_id=1
-    )
-
-    # -------------------- CREATE ACHIEVEMENTS --------------------
-    mylogger.info("Creating default achievements...")
-    achievements = Achievement(
-        name="Champion",
-        description="Aconseguir muntar de lliga.",
-        type="",
-        difficulty=5
+        stats_user=user_1
     )
 
 
@@ -231,28 +232,8 @@ if __name__ == "__main__":
         name = "Marathon",
         attribute ="speed" ,
         extra_attribute = "endurance"
-    )'''
+    )
 
-    # -------------------- CREATE User_Cards --------------------
-    # mylogger.info("Creating default user_cards...")
-    # user_cards = User_Card(
-    #     id_user = 1,
-    #     id_card = 1
-    # )
-
-    # -------------------- CREATE Game_Maps --------------------
-    # mylogger.info("Creating default game_maps...")
-    # games_maps = Games_Map(
-    #     id_game = 1,
-    #     id_map = 1
-    # )
-
-    # -------------------- CREATE User_Cards --------------------
-    # mylogger.info("Creating default user_cards...")
-    # user_achievements = User_Achievement(
-    #     id_user = 1,
-    #     achievement_id = 1
-    # )
 
 
     # ---------------- AFEGIR LES DADES EN ORDRE DEGUT A LES RELACIONS -------------- #
@@ -260,6 +241,7 @@ if __name__ == "__main__":
     db_session.add(user_1)
     db_session.add(user_2)
     db_session.add(rank)
+    db_session.add(map1)
     db_session.add(game1)
     db_session.add(game2)
     db_session.add(game_user_association1)
@@ -272,17 +254,9 @@ if __name__ == "__main__":
     db_session.add(card_4)
     db_session.add(card_5)
     db_session.add(deck)
-    db_session.add(map)
-    #db_session.add(game)
-    '''
-    db_session.add(user_1)
-    db_session.add(user_2)
     db_session.add(stats)
 
-    db_session.add(game)'''
-    #db.session.add(user_cards)
-    #db.session.add(games_maps)
-    #db.session.add(user_achievements)
+
 
     db_session.commit()
     db_session.close()
