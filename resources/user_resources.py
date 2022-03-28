@@ -46,7 +46,7 @@ class ResourceRegisterUser(DAMCoreResource):
             except ValueError:
                 raise falcon.HTTPBadRequest(description=messages.genere_invalid)
             user.username = req.media["username"]
-            user.password = User.set_password(req.media["password"])
+            user.set_password(req.media["password"])
             user.email = req.media["email"]
             user.name = req.media["name"]
             user.surname = req.media["surname"]
@@ -58,14 +58,14 @@ class ResourceRegisterUser(DAMCoreResource):
             #date = datetime.strptime(req.media["birthdate"], '%Y-%m-%d')
             user.birthdate = date
 
-            #user.genere = aux_genere
+            user.genere = aux_genere
 
             user.rank_id = 1
+
             user.phone = req.media["phone"]
             user.photo = req.media["photo"]
 
             #mylogger.info(user.username)
-
             self.db_session.add(user)
 
             try:
@@ -77,4 +77,3 @@ class ResourceRegisterUser(DAMCoreResource):
             raise falcon.HTTPBadRequest(description=messages.parameters_invalid)
 
         resp.status = falcon.HTTP_200
-

@@ -19,7 +19,8 @@ SchemaRegisterUser = {
         "surname": {"type": "string"},
         "birthdate": {"type": "string"},
         "phone": {"type": "string"},
-        "photo": {"type": "string"}
+        "photo": {"type": "string"},
+        "genere": {"type": "string"}
     },
     "required": ["username", "password", "email", "name", "surname"]
 }

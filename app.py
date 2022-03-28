@@ -42,8 +42,6 @@ application.add_route("/account/delete_token", account_resources.ResourceDeleteU
 
 
 #USERS
-
-
 application.add_route("/users/register", user_resources.ResourceRegisterUser())
 application.add_route("/users/show/{username}", user_resources.ResourceGetUserProfile())
 
