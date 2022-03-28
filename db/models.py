@@ -127,16 +127,14 @@ class Game(SQLAlchemyBase, JSONModel):
     #games_users = relationship("User", foreign_keys=[player_id_1,player_id_2])
 
 
-    # TODO: Modifiqueu aquest part amb els nous canvis
-    '''@hybrid_property
+    @hybrid_property
     def json_model(self):
         return {
-            "player_id_1": self.player_id_1,
-            "player_id_2": self.player_id_2,
-            "score_player_1": self.score_player_1,
+            "date": self.date,
+            "games_user": self.games_user,
+            "games_maps": self.games_maps,
             "score_player_2": self.score_player_2,
-            "date": self.date
-        }'''
+        }
 
 
 
