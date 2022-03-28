@@ -51,11 +51,11 @@ class ResourceRegisterUser(DAMCoreResource):
             user.name = req.media["name"]
             user.surname = req.media["surname"]
 
-            #Arreglar la data algun dia
+            # Arreglar la data algun dia
             aux = req.media["birthdate"]
             aux.split("-")
             date = datetime(int(aux[0]), int(aux[1]), int(aux[2]))
-            #date = datetime.strptime(req.media["birthdate"], '%Y-%m-%d')
+            # date = datetime.strptime(req.media["birthdate"], '%Y-%m-%d')
             user.birthdate = date
 
             user.genere = aux_genere
@@ -65,7 +65,7 @@ class ResourceRegisterUser(DAMCoreResource):
             user.phone = req.media["phone"]
             user.photo = req.media["photo"]
 
-            #mylogger.info(user.username)
+            # mylogger.info(user.username)
             self.db_session.add(user)
 
             try:
