@@ -183,6 +183,7 @@ class User(SQLAlchemyBase, JSONModel):
             "username": self.username,
             "birthdate": self.birthdate.strftime("%Y-%m-%d"),
             "photo": self.photo,
+            "rank_id": self.rank_id
         }
 
     @hybrid_property
