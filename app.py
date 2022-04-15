@@ -8,7 +8,7 @@ import falcon
 import messages
 import middlewares
 from falcon_multipart.middleware import MultipartMiddleware
-from resources import account_resources, common_resources, user_resources
+from resources import account_resources, common_resources, user_resources, game_resources
 from settings import configure_logging
 
 #S'inicia amb docker-compose up backend
@@ -42,9 +42,55 @@ application.add_route("/account/delete_token", account_resources.ResourceDeleteU
 
 
 #USERS
+# post
 application.add_route("/users/register", user_resources.ResourceRegisterUser())
+# get
 application.add_route("/users/show/{username}", user_resources.ResourceGetUserProfile())
+# put
 
+# delete
+
+
+#GAME
+# post
+
+# put
+
+# get
+application.add_route("/{username}/games", game_resources.ResourceGetUserGames())
+
+
+#CARD
+# put
+
+# get
+
+
+#STATS
+# post
+
+# put
+
+# get
+
+
+#MAP
+# get
+
+#DECK
+# post
+
+# put
+
+#get
+
+
+#ACHIEVEMENTS
+# put
+
+# get
+
+#
 
 application.add_sink(handle_404, "")
 
