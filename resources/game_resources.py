@@ -18,7 +18,7 @@ from datetime import datetime
 mylogger = logging.getLogger(__name__)
 
 
-#@falcon.before(requires_auth)
+@falcon.before(requires_auth)
 class ResourceGetUserGames(DAMCoreResource):
     def on_get(self, req, resp, *args, **kwargs):
         super(ResourceGetUserGames, self).on_get(req, resp, *args, **kwargs)
@@ -37,3 +37,26 @@ class ResourceGetUserGames(DAMCoreResource):
                 raise falcon.HTTPBadRequest(description=messages.user_not_found)
 
 
+@falcon.before(requires_auth)
+class ResourceGetGame(DAMCoreResource):
+    def on_get(self, req, resp, *args, **kwargs):
+        super(ResourceGetGame, self).on_get(req, resp, *args, **kwargs)
+
+        try:
+            game = self.db_session.query(Game)
+
+            resp.media = game.json_model
+            resp.status = falcon.HTTP_200
+        except NoResultFound:
+            raise falcon.HTTPBadRequest(description=messages.game_not_found)
+
+@falcon.before(requires_auth)
+class ResourceStartGame(DAMCoreResource):
+    def on_get(self, req, resp, *args, **kwargs):
+        super(ResourceStartGame, self).on_get(req, resp, *args, **kwargs)
+
+
+@falcon.before(requires_auth)
+class ResourceEndGame(DAMCoreResource):
+    def on_get(self, req, resp, *args, **kwargs):
+        super(ResourceEndGame, self).on_get(req, resp, *args, **kwargs)

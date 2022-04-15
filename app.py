@@ -45,20 +45,23 @@ application.add_route("/account/delete_token", account_resources.ResourceDeleteU
 # post
 application.add_route("/users/register", user_resources.ResourceRegisterUser())
 # get
-application.add_route("/users/show/{username}", user_resources.ResourceGetUserProfile())
+application.add_route("/{username}", user_resources.ResourceGetUserProfile())
 # put
-
+application.add_route("/{username}/profile/update", user_resources.ResourceUpdateUserProfile)
+application.add_route("/{username}/unsubscribe", user_resources.ResourceUserUnsubscribe)
 # delete
-
+application.add_route("/{username}/delete", user_resources.ResourceUserDelete)
 
 #GAME
 # post
+application.add_route("/game/start", game_resources.ResourceStartGame)
 
 # put
+application.add_route("/{game_id}/end", game_resources.ResourceStartGame)
 
 # get
-application.add_route("/{username}/games", game_resources.ResourceGetUserGames())
-
+application.add_route("/{game_id}/show", game_resources.ResourceGetGame())
+application.add_route("/{user_id}/games", game_resources.ResourceGetUserGames())
 
 #CARD
 # put

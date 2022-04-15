@@ -73,3 +73,24 @@ class ResourceRegisterUser(DAMCoreResource):
             raise falcon.HTTPBadRequest(description=messages.parameters_invalid)
 
         resp.status = falcon.HTTP_200
+
+class ResourceUpdateUserProfile(DAMCoreResource):
+    @jsonschema.validate(SchemaRegisterUser)
+    def on_put(self, req, resp, *args, **kwargs):
+        super(ResourceUpdateUserProfile, self).on_put(req, resp, *args, **kwargs)
+        mylogger.info("Updating user ")
+        user = User()
+
+class ResourceUserUnsubscribe(DAMCoreResource):
+    @jsonschema.validate(SchemaRegisterUser)
+    def on_put(self, req, resp, *args, **kwargs):
+        super(ResourceUserUnsubscribe, self).on_put(req, resp, *args, **kwargs)
+        mylogger.info("Unsubscribing user ")
+        user = User()
+
+class ResourceUserDelete(DAMCoreResource):
+    @jsonschema.validate(SchemaRegisterUser)
+    def on_put(self, req, resp, *args, **kwargs):
+        super(ResourceUserDelete, self).on_put(req, resp, *args, **kwargs)
+        mylogger.info("Deleting user ")
+        user = User()

@@ -90,7 +90,6 @@ User_Card = Table("User_Cards", SQLAlchemyBase.metadata,
                           nullable=False)
                    )
 
-
 Deck_Card_Association = Table("Deck_Card_Association", SQLAlchemyBase.metadata,
                     Column("id_deck", Integer,
                           ForeignKey("deck.id", onupdate="CASCADE", ondelete="CASCADE"),
@@ -100,11 +99,19 @@ Deck_Card_Association = Table("Deck_Card_Association", SQLAlchemyBase.metadata,
                           nullable=False)
                    )            
                    
+class User_Card_Association(SQLAlchemyBase, JSONModel):
+    __tablename__ = "user_card_association"
+    exp = Column(Integer)
+    user_id = Column(Integer, ForeignKey("users.id", onupdate="CASCADE", ondelete="CASCADE"), nullable=False, primary_key = True)
+    user_association_card  = relationship("User", back_populates="user_cards")
+
+    card_id = Column(Integer, ForeignKey("cards.id", onupdate="CASCADE", ondelete="CASCADE"), nullable=False, primary_key = True)
+    card_association_user = relationship("Card", back_populates="cards_user")
+
 
 class User_Game_Association(SQLAlchemyBase, JSONModel):
     __tablename__ = "user_game_association"
-    #id = Column(Integer, primary_key=True)
-    score = Column(Integer)
+    score = Column(Integer, nullable=False)
     user_id = Column(Integer, ForeignKey("users.id", onupdate="CASCADE", ondelete="CASCADE"), nullable=False, primary_key = True)
     user_association_game  = relationship("User", back_populates="user_games")
 
@@ -120,13 +127,8 @@ class Game(SQLAlchemyBase, JSONModel):
     # Relacio N a N entre Games i User_Games_Association
     games_user = relationship("User_Game_Association", back_populates="game_association_user", cascade="all, delete-orphan")
 
-
     # Relació N a N entre Games i Maps.
     games_maps = relationship("Map", secondary=Games_Map, back_populates="maps_games")
-
-    # Relació 1 a N entre Games i Users
-    #games_users = relationship("User", foreign_keys=[player_id_1,player_id_2])
-
 
     # TODO: Modifiqueu aquest part amb els nous canvis
     @hybrid_property
@@ -169,12 +171,12 @@ class User(SQLAlchemyBase, JSONModel):
     # Relació 1 a N entre User i Deck.
     user_decks = relationship("Deck", back_populates="decks_user", cascade="all, delete-orphan")
 
-    # Relació N a N entre User i Card.
-    user_card = relationship("Card", secondary=User_Card)
-
-    # Relació N a N entre User i Game
+    # Relació N a N entre User i User_Game_Association
     user_games = relationship("User_Game_Association", back_populates="user_association_game", cascade="all, delete-orphan")
-
+    
+    # Relació N a N entre User i User_Card_Association
+    user_cards = relationship("User_Card_Association", back_populates="user_association_card", cascade="all, delete-orphan")
+    
     @hybrid_property
     def public_profile(self):
         return {
@@ -330,13 +332,11 @@ class Card(SQLAlchemyBase, JSONModel):
     intelligence = Column(Integer, nullable=False)
     category = Column(Enum(CategoryEnum), nullable=False)
 
-    # Relació 1 a N entre Card i Deck.
-    #card_decks = relationship("Deck", back_populates="deck_cards", cascade="all, delete-orphan")
-    
     # Relació N a N entre Card i User.
     card_user = relationship("User", secondary="User_Cards", back_populates="user_card")
 
-    card_deck = relationship("Deck", secondary="Deck_Card_Association", back_populates="deck_card")
+    # Relació N a N entre Card i User_Card_Association
+    card_deck = relationship("User_Card_Association", back_populates="card_association_user", cascade="all, delete-orphan")
 
     @hybrid_property
     def json_model(self):
