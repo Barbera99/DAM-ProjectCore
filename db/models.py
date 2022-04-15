@@ -79,7 +79,8 @@ Games_Map = Table("Games_Maps", SQLAlchemyBase.metadata,
                           ForeignKey("maps.id", onupdate="CASCADE", ondelete="CASCADE"),
                           nullable=False),
                    )
-
+                   
+''' Crear-la com la de User_Game_Association i afegir el atribut de nivell de carta '''
 User_Card = Table("User_Cards", SQLAlchemyBase.metadata,
                     Column("id_user", Integer,
                           ForeignKey("users.id", onupdate="CASCADE", ondelete="CASCADE"),
@@ -127,15 +128,13 @@ class Game(SQLAlchemyBase, JSONModel):
     #games_users = relationship("User", foreign_keys=[player_id_1,player_id_2])
 
 
+    # TODO: Modifiqueu aquest part amb els nous canvis
     @hybrid_property
     def json_model(self):
         return {
-            "date": self.date,
-            "games_user": self.games_user,
-            "games_maps": self.games_maps,
-            "score_player_2": self.score_player_2,
+            "id": self.id,
+            "date": self.date
         }
-
 
 
 class User(SQLAlchemyBase, JSONModel):
