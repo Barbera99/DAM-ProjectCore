@@ -79,16 +79,6 @@ Games_Map = Table("Games_Maps", SQLAlchemyBase.metadata,
                           ForeignKey("maps.id", onupdate="CASCADE", ondelete="CASCADE"),
                           nullable=False),
                    )
-                   
-''' Crear-la com la de User_Game_Association i afegir el atribut de nivell de carta '''
-User_Card = Table("User_Cards", SQLAlchemyBase.metadata,
-                    Column("id_user", Integer,
-                          ForeignKey("users.id", onupdate="CASCADE", ondelete="CASCADE"),
-                          nullable=False),
-                    Column("id_card", Integer,
-                          ForeignKey("cards.id", onupdate="CASCADE", ondelete="CASCADE"),
-                          nullable=False)
-                   )
 
 Deck_Card_Association = Table("Deck_Card_Association", SQLAlchemyBase.metadata,
                     Column("id_deck", Integer,
@@ -98,7 +88,7 @@ Deck_Card_Association = Table("Deck_Card_Association", SQLAlchemyBase.metadata,
                           ForeignKey("cards.id", onupdate="CASCADE", ondelete="CASCADE"),
                           nullable=False)
                    )            
-                   
+''' Crear-la com la de User_Game_Association i afegir el atribut de nivell de carta '''
 class User_Card_Association(SQLAlchemyBase, JSONModel):
     __tablename__ = "user_card_association"
     exp = Column(Integer)
