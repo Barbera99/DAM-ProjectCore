@@ -65,7 +65,7 @@ application.add_route("/game/{game_id}/end", game_resources.ResourceEndGame())
 
 # get
 application.add_route("/game/{game_id}/show", game_resources.ResourceGetGame())
-application.add_route("/user/history/{user_id}", game_resources.ResourceGetUserGames())
+application.add_route("/user/history/{user_id}", game_resources.ResourceGetUserGames()) ## Preguntar a DIDAC
 
 #CARD
 # put
