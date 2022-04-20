@@ -9,7 +9,7 @@ from sqlalchemy.sql import text
 
 import db
 import settings
-from db.models import SQLAlchemyBase, User, GenereEnum, UserToken, Rank, Stats, Achievement, Deck, Card, Game, Map, CategoryEnum, Games_Map, User_Achievement, User_Card, User_Game_Association
+from db.models import SQLAlchemyBase, User, GenereEnum, UserToken, Rank, Stats, Achievement, Deck, Card, Game, Map, CategoryEnum, Games_Map, User_Achievement, User_Game_Association
 from settings import DEFAULT_LANGUAGE
 
 # LOGGING
@@ -33,7 +33,7 @@ if __name__ == "__main__":
 
     # -------------------- REMOVE AND CREATE TABLES --------------------
     mylogger.info("Removing database...")
-    #SQLAlchemyBase.metadata.drop_all(db.DB_ENGINE)
+    SQLAlchemyBase.metadata.drop_all(db.DB_ENGINE)
     mylogger.info("Creating database...")
     SQLAlchemyBase.metadata.create_all(db.DB_ENGINE)
 
@@ -118,7 +118,6 @@ if __name__ == "__main__":
         phone='678954327',
         photo="foto_perfil_1.png",
         rank_id=1,
-        user_card=[card_1, card_2, card_3, card_4, card_5],
         users_achievements = [achievement_1]
 
     )
@@ -137,7 +136,6 @@ if __name__ == "__main__":
         phone='687324521',
         photo="foto_perfil_2.png",
         rank_id=1,
-        user_card=[card_1, card_2, card_3, card_4, card_5],
         users_achievements=[achievement_1]
 
     )
@@ -151,6 +149,7 @@ if __name__ == "__main__":
         min_medals=300,
         max_medals=500
     )
+
     # -------------------- CREATE MAP --------------------
     map1 = Map(
         name="Mapa1",

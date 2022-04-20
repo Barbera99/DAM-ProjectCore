@@ -24,3 +24,4 @@ SchemaRegisterUser = {
     },
     "required": ["username", "password", "email", "name", "surname"]
 }
+

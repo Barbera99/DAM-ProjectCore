@@ -87,27 +87,31 @@ Deck_Card_Association = Table("Deck_Card_Association", SQLAlchemyBase.metadata,
                     Column("id_card", Integer,
                           ForeignKey("cards.id", onupdate="CASCADE", ondelete="CASCADE"),
                           nullable=False)
-                   )            
+                   )
+
 ''' Crear-la com la de User_Game_Association i afegir el atribut de nivell de carta '''
 class User_Card_Association(SQLAlchemyBase, JSONModel):
     __tablename__ = "user_card_association"
-    exp = Column(Integer)
+    exp = Column(Integer, nullable=False)
     user_id = Column(Integer, ForeignKey("users.id", onupdate="CASCADE", ondelete="CASCADE"), nullable=False, primary_key = True)
-    user_association_card  = relationship("User", back_populates="user_cards")
-
+    user_association_card = relationship("User", back_populates="user_cards")
     card_id = Column(Integer, ForeignKey("cards.id", onupdate="CASCADE", ondelete="CASCADE"), nullable=False, primary_key = True)
     card_association_user = relationship("Card", back_populates="cards_user")
-
 
 class User_Game_Association(SQLAlchemyBase, JSONModel):
     __tablename__ = "user_game_association"
     score = Column(Integer, nullable=False)
     user_id = Column(Integer, ForeignKey("users.id", onupdate="CASCADE", ondelete="CASCADE"), nullable=False, primary_key = True)
-    user_association_game  = relationship("User", back_populates="user_games")
-
+    user_association_game = relationship("User", back_populates="user_games")
     game_id = Column(Integer, ForeignKey("games.id", onupdate="CASCADE", ondelete="CASCADE"), nullable=False, primary_key = True)
     game_association_user = relationship("Game", back_populates="games_user")
-    
+
+    def json_model(self):
+        return {
+            "score": self.score,
+            "user_id": self.user_id,
+            "game_id": self.game_id
+        }
 
 class Game(SQLAlchemyBase, JSONModel):
     __tablename__ = "games"
@@ -122,11 +126,17 @@ class Game(SQLAlchemyBase, JSONModel):
 
     # TODO: Modifiqueu aquest part amb els nous canvis
     @hybrid_property
-    def json_model(self):
+    def json_game(self, user1, user2, score1, score2):
         return {
             "id": self.id,
-            "date": self.date
+            "date": self.date,
+            "user1": user1,
+            "score1": score1,
+            "user2": user2,
+            "score2": score2
         }
+
+
 
 
 class User(SQLAlchemyBase, JSONModel):
@@ -144,7 +154,6 @@ class User(SQLAlchemyBase, JSONModel):
     phone = Column(Unicode(50))
     photo = Column(Unicode(255))
     rank_id = Column(Integer, ForeignKey("ranks.id", onupdate="CASCADE", ondelete="CASCADE"), nullable=False)
-    #games_enrolled = relationship("Game", back_populates="players")
 
     # Relació 1 a N entre Rank i Users
     users_rank = relationship("Rank", back_populates="rank_users")
@@ -297,7 +306,6 @@ class Deck(SQLAlchemyBase, JSONModel):
     user_id = Column(Integer, ForeignKey("users.id", onupdate="CASCADE", ondelete="CASCADE"), nullable=False)
     created_at = Column(DateTime, default=datetime.datetime.now, nullable=False)
 
-
     # R#elació N a 1 entre Deck i User.
     decks_user = relationship("User", back_populates="user_decks")
 
@@ -321,12 +329,13 @@ class Card(SQLAlchemyBase, JSONModel):
     endurance = Column(Integer, nullable=False)
     intelligence = Column(Integer, nullable=False)
     category = Column(Enum(CategoryEnum), nullable=False)
+    image = Column(Unicode(255))
 
-    # Relació N a N entre Card i User.
-    card_user = relationship("User", secondary="User_Cards", back_populates="user_card")
+    # Relació N a N entre Card i User_Card_Association.
+    cards_user = relationship("User_Card_Association", back_populates="card_association_user", cascade="all, delete-orphan")
 
-    # Relació N a N entre Card i User_Card_Association
-    card_deck = relationship("User_Card_Association", back_populates="card_association_user", cascade="all, delete-orphan")
+    # Relació N a N entre Card i Deck
+    card_deck = relationship("Deck", secondary="Deck_Card_Association", back_populates="deck_card")
 
     @hybrid_property
     def json_model(self):
@@ -340,6 +349,9 @@ class Card(SQLAlchemyBase, JSONModel):
             "category": self.category
         }
 
+    @hybrid_property
+    def photo_path(self):
+        return _generate_media_path(self, "image")
 
 class Map(SQLAlchemyBase, JSONModel):
     __tablename__ = "maps"

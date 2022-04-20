@@ -8,7 +8,8 @@ import falcon
 import messages
 import middlewares
 from falcon_multipart.middleware import MultipartMiddleware
-from resources import account_resources, common_resources, user_resources, game_resources
+from resources import account_resources, common_resources, user_resources, game_resources, card_resources, \
+    stats_resources
 from settings import configure_logging
 
 #S'inicia amb docker-compose up backend
@@ -44,33 +45,39 @@ application.add_route("/account/delete_token", account_resources.ResourceDeleteU
 #USERS
 # post
 application.add_route("/users/register", user_resources.ResourceRegisterUser())
+
 # get
-application.add_route("/{username}", user_resources.ResourceGetUserProfile())
+application.add_route("/user/{username}", user_resources.ResourceGetUserProfile())
+
 # put
-application.add_route("/{username}/profile/update", user_resources.ResourceUpdateUserProfile)
-application.add_route("/{username}/unsubscribe", user_resources.ResourceUserUnsubscribe)
+application.add_route("/user/{username}/profile/update", user_resources.ResourceUpdateUserProfile()) ## Preguntar a DIDAC
+application.add_route("/user/{username}/unsubscribe", user_resources.ResourceUserUnsubscribe())
+
 # delete
-application.add_route("/{username}/delete", user_resources.ResourceUserDelete)
+application.add_route("/user/{username}/delete", user_resources.ResourceUserDelete())
 
 #GAME
 # post
-application.add_route("/game/start", game_resources.ResourceStartGame)
+application.add_route("/game/start", game_resources.ResourceStartGame())
 
 # put
-application.add_route("/{game_id}/end", game_resources.ResourceStartGame)
+application.add_route("/game/{game_id}/end", game_resources.ResourceEndGame())
 
 # get
-application.add_route("/{game_id}/show", game_resources.ResourceGetGame())
-application.add_route("/{user_id}/games", game_resources.ResourceGetUserGames())
+application.add_route("/game/{game_id}/show", game_resources.ResourceGetGame())
+application.add_route("/user/history/{user_id}", game_resources.ResourceGetUserGames())
 
 #CARD
 # put
+application.add_route("/card/{card_id}/upgrade", card_resources.ResourceUpgradeCard())
 
 # get
-
+application.add_route("/card/{card_id}/stats/{username}", card_resources.ResourceGetCardStats())
+application.add_route("/card/{card_id}/image", card_resources.ResourceGetCardImage()) ## Preguntar a DIDAC
 
 #STATS
 # post
+application.add_route("/stats/{user_id}/create", stats_resources.ResourceGetUserStats())
 
 # put
 

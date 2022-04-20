@@ -74,12 +74,41 @@ class ResourceRegisterUser(DAMCoreResource):
 
         resp.status = falcon.HTTP_200
 
+''' Preguntar com podem actualitzar un usuari agafant aquest amb el req.context["auth_user"] '''
 class ResourceUpdateUserProfile(DAMCoreResource):
     @jsonschema.validate(SchemaRegisterUser)
     def on_put(self, req, resp, *args, **kwargs):
         super(ResourceUpdateUserProfile, self).on_put(req, resp, *args, **kwargs)
         mylogger.info("Updating user ")
-        user = User()
+        current_user = req.context["auth_user"]
+
+        try:
+            try:
+                aux_genere = GenereEnum(req.media["genere"].upper())
+            except ValueError:
+                raise falcon.HTTPBadRequest(description=messages.genere_invalid)
+            current_user.username = req.media["username"]
+            current_user.set_password(req.media["password"])
+            current_user.email = req.media["email"]
+            current_user.name = req.media["name"]
+            current_user.surname = req.media["surname"]
+            current_user.birthdate = req.media["birthdate"]
+            current_user.genere = aux_genere
+            current_user.phone = req.media["phone"]
+            current_user.photo = req.media["photo"]
+
+            self.db_session.add(current_user)
+
+            try:
+                self.db_session.commit()
+            except IntegrityError:
+                raise falcon.HTTPBadRequest(description=messages.database_error)
+
+            resp.status = falcon.HTTP_200
+        except KeyError:
+            raise falcon.HTTPBadRequest(description=messages.parameters_invalid)
+
+
 
 class ResourceUserUnsubscribe(DAMCoreResource):
     @jsonschema.validate(SchemaRegisterUser)
