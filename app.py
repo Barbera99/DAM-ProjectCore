@@ -9,7 +9,7 @@ import messages
 import middlewares
 from falcon_multipart.middleware import MultipartMiddleware
 from resources import account_resources, common_resources, user_resources, game_resources, card_resources, \
-    stats_resources
+    stats_resources, map_resources, deck_resources
 from settings import configure_logging
 
 #S'inicia amb docker-compose up backend
@@ -77,23 +77,28 @@ application.add_route("/card/{card_id}/image", card_resources.ResourceGetCardIma
 
 #STATS
 # post
-application.add_route("/stats/{user_id}/create", stats_resources.ResourceGetUserStats())
+application.add_route("/stats/{user_id}/create", stats_resources.ResourceCreateUserStats())
 
 # put
+application.add_route("/stats/{user_id}/update", stats_resources.ResourceUpdateUserStats())
 
 # get
+application.add_route("/stats/{user_id}", stats_resources.ResourceGetUserStats())
 
 
 #MAP
 # get
+application.add_route("/map/get", map_resources.ResourceGetRandomMap())
 
 #DECK
 # post
+application.add_route("/deck/{user_id}/create", deck_resources.ResourceCreateDeck())
 
 # put
+application.add_route("/deck/{user_id}/update", deck_resources.ResourceUpdateDeck())
 
 #get
-
+application.add_route("/deck/{user_id}/{deck_id}", deck_resources.ResourceGetUserDeck())
 
 #ACHIEVEMENTS
 # put

@@ -19,31 +19,13 @@ mylogger = logging.getLogger(__name__)
 
 
 #@falcon.before(requires_auth)
-class ResourceGetUserStats(DAMCoreResource):
+class ResourceGetRandomMap(DAMCoreResource):
  def on_post(self, req, resp, *args, **kwargs):
-        super(ResourceGetUserStats, self).on_post(req, resp, *args, **kwargs)
+        super(ResourceGetRandomMap, self).on_post(req, resp, *args, **kwargs)
 
         try:
             aux_card = self.db_session.query(Card).filter(Card.id == kwargs["card_id"]).one()
             resp.media = aux_card.photo_path
             resp.status = falcon.HTTP_200
-        except NoResultFound:
-            raise falcon.HTTPBadRequest(description=messages.user_not_found)
-
-class ResourceUpdateUserStats(DAMCoreResource):
- def on_put(self, req, resp, *args, **kwargs):
-        super(ResourceUpdateUserStats, self).on_put(req, resp, *args, **kwargs)
-
-        try:
-            #TO-DO
-        except NoResultFound:
-            raise falcon.HTTPBadRequest(description=messages.user_not_found)
-
-class ResourceCreateUserStats(DAMCoreResource):
- def on_put(self, req, resp, *args, **kwargs):
-        super(ResourceUpdateUserStats, self).on_put(req, resp, *args, **kwargs)
-
-        try:
-            #TO-DO
         except NoResultFound:
             raise falcon.HTTPBadRequest(description=messages.user_not_found)
