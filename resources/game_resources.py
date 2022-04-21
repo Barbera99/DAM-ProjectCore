@@ -23,29 +23,28 @@ class ResourceGetUserGames(DAMCoreResource):
     def on_get(self, req, resp, *args, **kwargs):
         super(ResourceGetUserGames, self).on_get(req, resp, *args, **kwargs)
         game = Game()
-        if "user_id" in kwargs:
-            try:
-                games_json = []
-                games_played = self.db_session.query(User_Game_Association).filter(User_Game_Association.user_id == kwargs["user_id"])
-                for g in games_played:
-                    games = self.db_session.query(User_Game_Association).filter(User_Game_Association.game_id == g.game_id)
-                    date = self.db_session.query(Game).filter(Game.id == g.game_id).one()
-                    user1 = self.db_session.query(User).filter(User.id == games[0].user_id).one()
-                    user2 = self.db_session.query(User).filter(User.id == games[1].user_id).one()
-                    game = {
-                        "id": g.game_id,
-                        "date": date.date.strftime("%m/%d/%Y, %H:%M:%S"),
-                        "user1": user1.username,
-                        "score1": games[0].score,
-                        "user2": user2.username,
-                        "score2": games[1].score
-                    }
-                    mylogger.info(game)
-                    games_json.append(game)
-                resp.media = games_json
-                resp.status = falcon.HTTP_200
-            except NoResultFound:
-                raise falcon.HTTPBadRequest(description=messages.user_not_found)
+        try:
+            games_json = []
+            games_played = self.db_session.query(User_Game_Association).filter(User_Game_Association.user_id == 1)
+            for g in games_played:
+                games = self.db_session.query(User_Game_Association).filter(User_Game_Association.game_id == g.game_id)
+                date = self.db_session.query(Game).filter(Game.id == g.game_id).one()
+                user1 = self.db_session.query(User).filter(User.id == games[0].user_id).one()
+                user2 = self.db_session.query(User).filter(User.id == games[1].user_id).one()
+                game = {
+                    "id": g.game_id,
+                    "date": date.date.strftime("%m/%d/%Y, %H:%M:%S"),
+                    "user1": user1.username,
+                    "score1": games[0].score,
+                    "user2": user2.username,
+                    "score2": games[1].score
+                }
+                mylogger.info(game)
+                games_json.append(game)
+            resp.media = games_json
+            resp.status = falcon.HTTP_200
+        except NoResultFound:
+            raise falcon.HTTPBadRequest(description=messages.user_not_found)
 
 
 #@falcon.before(requires_auth)

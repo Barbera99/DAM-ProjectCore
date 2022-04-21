@@ -24,8 +24,34 @@ class ResourceCreateDeck(DAMCoreResource):
         super(ResourceCreateDeck, self).on_post(req, resp, *args, **kwargs)
 
         try:
-            aux_card = self.db_session.query(Card).filter(Card.id == kwargs["card_id"]).one()
-            resp.media = aux_card.photo_path
             resp.status = falcon.HTTP_200
         except NoResultFound:
             raise falcon.HTTPBadRequest(description=messages.user_not_found)
+
+class ResourceUpdateDeck(DAMCoreResource):
+ def on_put(self, req, resp, *args, **kwargs):
+        super(ResourceUpdateDeck, self).on_put(req, resp, *args, **kwargs)
+
+        try:
+            resp.status = falcon.HTTP_200
+        except NoResultFound:
+            raise falcon.HTTPBadRequest(description=messages.user_not_found)
+
+class ResourceGetDeck(DAMCoreResource):
+ def on_get(self, req, resp, *args, **kwargs):
+        super(ResourceGetDeck, self).on_get(req, resp, *args, **kwargs)
+
+        try:
+            resp.status = falcon.HTTP_200
+        except NoResultFound:
+            raise falcon.HTTPBadRequest(description=messages.user_not_found)
+
+class ResourceGetUserDecks(DAMCoreResource):
+    def on_get(self, req, resp, *args, **kwargs):
+        super(ResourceGetUserDecks, self).on_get(req, resp, *args, **kwargs)
+
+        if "user_id" in kwargs:
+            try:
+                resp.status = falcon.HTTP_200
+            except NoResultFound:
+                raise falcon.HTTPBadRequest(description=messages.user_not_found)
