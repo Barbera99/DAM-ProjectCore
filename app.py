@@ -49,7 +49,7 @@ application.add_route("/users/register", user_resources.ResourceRegisterUser())
 application.add_route("/user/{username}", user_resources.ResourceGetUserProfile())
 
 # put
-application.add_route("/user/{username}/profile/update", user_resources.ResourceUpdateUserProfile()) ## Preguntar a DIDAC
+application.add_route("/user/{username}/profile/update", user_resources.ResourceUpdateUserProfile())
 application.add_route("/user/{username}/unsubscribe", user_resources.ResourceUserUnsubscribe())
 
 # delete
@@ -64,15 +64,15 @@ application.add_route("/game/{game_id}/end", game_resources.ResourceEndGame())
 
 # get
 application.add_route("/game/{game_id}/show", game_resources.ResourceGetGame())
-application.add_route("/game/history", game_resources.ResourceGetUserGames()) ## Preguntar a DIDAC
+application.add_route("/game/history", game_resources.ResourceGetUserGames())
 
 #CARD
 # put
 application.add_route("/card/{card_id}/upgrade", card_resources.ResourceUpgradeCard())
 
 # get
-application.add_route("/card/{card_id}/stats/{username}", card_resources.ResourceGetCardStats())
-application.add_route("/card/{card_id}/image", card_resources.ResourceGetCardImage()) ## Preguntar a DIDAC
+application.add_route("/card/{card_id}/stats", card_resources.ResourceGetCardStats())
+application.add_route("/card/{card_id}/image", card_resources.ResourceGetCardImage())
 
 #STATS
 # post

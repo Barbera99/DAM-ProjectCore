@@ -22,27 +22,31 @@ mylogger = logging.getLogger(__name__)
 class ResourceGetCardStats(DAMCoreResource):
  def on_get(self, req, resp, *args, **kwargs):
         super(ResourceGetCardStats, self).on_get(req, resp, *args, **kwargs)
+        try:
+            aux_card = self.db_session.query(Card).filter(Card.id == kwargs["card_id"]).one()
+            resp.media = aux_card.json_model
 
 
-''' Preguntar a didac com afegir la PATH del static a la base de dades'''
 class ResourceGetCardImage(DAMCoreResource):
  def on_get(self, req, resp, *args, **kwargs):
         super(ResourceGetCardImage, self).on_get(req, resp, *args, **kwargs)
 
         try:
             aux_card = self.db_session.query(Card).filter(Card.id == kwargs["card_id"]).one()
-            resp.media = aux_card.photo_path
+            resp.media = aux_card.image
             resp.status = falcon.HTTP_200
         except NoResultFound:
             raise falcon.HTTPBadRequest(description=messages.user_not_found)
 
 
 class ResourceUpgradeCard (DAMCoreResource):
- def on_post(self, req, resp, *args, **kwargs):
-        super(ResourceUpgradeCard, self).on_post(req, resp, *args, **kwargs)
+ def on_put(self, req, resp, *args, **kwargs):
+        super(ResourceUpgradeCard, self).on_put(req, resp, *args, **kwargs)
+        current_user = req.context["auth_user"]
 
-        if "username" in kwargs:
+        if "card_id" in kwargs:
             try:
+
                 aux_user = self.db_session.query(User).filter(User.username == kwargs["username"]).one()
 
                 resp.media = aux_user.public_profile

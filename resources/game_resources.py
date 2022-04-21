@@ -62,8 +62,13 @@ class ResourceGetGame(DAMCoreResource):
 
 #@falcon.before(requires_auth)
 class ResourceStartGame(DAMCoreResource):
-    def on_get(self, req, resp, *args, **kwargs):
-        super(ResourceStartGame, self).on_get(req, resp, *args, **kwargs)
+    def on_post(self, req, resp, *args, **kwargs):
+        super(ResourceStartGame, self).on_post(req, resp, *args, **kwargs)
+
+        try:
+
+        except NoResultFound:
+            raise falcon.HTTPBadRequest(description=messages.game_not_found)
 
 
 #@falcon.before(requires_auth)

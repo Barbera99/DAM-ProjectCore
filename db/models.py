@@ -346,11 +346,12 @@ class Card(SQLAlchemyBase, JSONModel):
             "agility": self.agility,
             "endurance": self.endurance,
             "intelligence": self.intelligence,
-            "category": self.category
+            "category": self.category,
+            "image": self.image
         }
 
     @hybrid_property
-    def photo_path(self):
+    def image_path(self):
         return _generate_media_path(self, "image")
 
 class Map(SQLAlchemyBase, JSONModel):

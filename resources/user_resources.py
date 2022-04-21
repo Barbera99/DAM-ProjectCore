@@ -74,7 +74,6 @@ class ResourceRegisterUser(DAMCoreResource):
 
         resp.status = falcon.HTTP_200
 
-''' Preguntar com podem actualitzar un usuari agafant aquest amb el req.context["auth_user"] '''
 class ResourceUpdateUserProfile(DAMCoreResource):
     @jsonschema.validate(SchemaRegisterUser)
     def on_put(self, req, resp, *args, **kwargs):
