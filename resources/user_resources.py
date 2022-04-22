@@ -7,7 +7,7 @@ import falcon
 from falcon.media.validators import jsonschema
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.exc import NoResultFound
-
+from resources import stats_resources
 import messages
 from db.models import User, GenereEnum
 from hooks import requires_auth
@@ -26,7 +26,6 @@ class ResourceGetUserProfile(DAMCoreResource):
         if "username" in kwargs:
             try:
                 aux_user = self.db_session.query(User).filter(User.username == kwargs["username"]).one()
-
                 resp.media = aux_user.public_profile
                 resp.status = falcon.HTTP_200
             except NoResultFound:
@@ -60,6 +59,8 @@ class ResourceRegisterUser(DAMCoreResource):
 
             user.phone = req.media["phone"]
             user.photo = req.media["photo"]
+
+            stats_resources.ResourceCreateUserStats
 
             # mylogger.info(user.username)
             self.db_session.add(user)

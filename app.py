@@ -43,40 +43,43 @@ application.add_route("/account/delete_token", account_resources.ResourceDeleteU
 
 #USERS
 # post
-application.add_route("/users/register", user_resources.ResourceRegisterUser())
+application.add_route("/users/register", user_resources.ResourceRegisterUser()) # fet pero falta inicialitzar stats, baralles, ...
 
 # get
-application.add_route("/user/{username}", user_resources.ResourceGetUserProfile())
+application.add_route("/user/{username}", user_resources.ResourceGetUserProfile()) # FET
 
 # put
-application.add_route("/user/{username}/profile/update", user_resources.ResourceUpdateUserProfile())
-application.add_route("/user/{username}/unsubscribe", user_resources.ResourceUserUnsubscribe())
+application.add_route("/user/profile/update/{user_id}", user_resources.ResourceUpdateUserProfile()) # Pendent de canviar el auth_user
+application.add_route("/user/unsuscribe/{user_id}", user_resources.ResourceUserUnsubscribe())
 
 # delete
-application.add_route("/user/{username}/delete", user_resources.ResourceUserDelete())
+application.add_route("/user/delete/{username}", user_resources.ResourceUserDelete())
 
 #GAME
 # post
-application.add_route("/game/start", game_resources.ResourceStartGame())
+application.add_route("/game/start/{user_id}", game_resources.ResourceStartGame())
 
 # put
-application.add_route("/game/{game_id}/end", game_resources.ResourceEndGame())
+application.add_route("/game/end/{game_id}", game_resources.ResourceEndGame())
 
 # get
-application.add_route("/game/{game_id}/show", game_resources.ResourceGetGame())
-application.add_route("/game/history", game_resources.ResourceGetUserGames())
+application.add_route("/game/show/{game_id}", game_resources.ResourceGetGame()) # FET
+application.add_route("/user/game/history/{user_id}", game_resources.ResourceGetUserGames()) # FET
 
 #CARD
 # put
-application.add_route("/card/{card_id}/upgrade", card_resources.ResourceUpgradeCard())
+## application.add_route("/card/{card_id}/upgrade", card_resources.ResourceUpgradeCard())
 
 # get
-application.add_route("/card/{card_id}/stats", card_resources.ResourceGetCardStats())
-application.add_route("/card/{card_id}/image", card_resources.ResourceGetCardImage())
+application.add_route("/card/{card_id}", card_resources.ResourceGetCard()) # FET
+application.add_route("/card/image/{card_id}", card_resources.ResourceGetCardImage()) # Falta arreglar per retornar la imatge
+
+# post
+application.add_route("/card/set_image/{card_id}", card_resources.ResourceSetImage()) # FET
 
 #STATS
-# post
-application.add_route("/stats/create", stats_resources.ResourceCreateUserStats())
+# post (Aquesta funcio es crida a l'hora de crear un nou usuari)
+## application.add_route("/stats/create", stats_resources.ResourceCreateUserStats())
 
 # put
 application.add_route("/stats/update", stats_resources.ResourceUpdateUserStats())
