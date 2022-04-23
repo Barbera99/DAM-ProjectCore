@@ -8,7 +8,7 @@ import falcon
 import messages
 import middlewares
 from falcon_multipart.middleware import MultipartMiddleware
-from resources import account_resources, common_resources, user_resources, game_resources, card_resources, stats_resources, map_resources, deck_resources, achievement_resources
+from resources import account_resources, common_resources, user_resources, game_resources, card_resources, stats_resources, map_resources, deck_resources, achievement_resources, rank_resources
 from settings import configure_logging
 
 #S'inicia amb docker-compose up backend
@@ -85,11 +85,11 @@ application.add_route("/card/set_image/{card_id}", card_resources.ResourceSetIma
 application.add_route("/stats/update", stats_resources.ResourceUpdateUserStats())
 
 # get
-application.add_route("/stats", stats_resources.ResourceGetUserStats())
+application.add_route("/stats/{user_id}", stats_resources.ResourceGetUserStats()) # FET
 
 #MAP
 # get
-application.add_route("/map/get", map_resources.ResourceGetRandomMap())
+application.add_route("/map/get", map_resources.ResourceGetRandomMap()) # FET
 
 #DECK
 # post
@@ -107,7 +107,12 @@ application.add_route("/decks", deck_resources.ResourceGetUserDecks())
 application.add_route("/achievement/{achievement_id}/unlock", achievement_resources.ResourceUnlock())
 
 # get
-application.add_route("/achievements", achievement_resources.ResourceGetUserAchievements())
+application.add_route("/achievements/{user_id}", achievement_resources.ResourceGetUserAchievements()) # FET
+
+#RANK
+# get
+application.add_route("/rank/info/{id_rank}", rank_resources.ResourceGetRankInfo()) # FET
+
 
 #
 application.add_sink(handle_404, "")
