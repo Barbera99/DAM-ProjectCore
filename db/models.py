@@ -338,6 +338,14 @@ class Card(SQLAlchemyBase, JSONModel):
     card_deck = relationship("Deck", secondary="Deck_Card_Association", back_populates="deck_card")
 
     @hybrid_property
+    def image_path(self):
+        return _generate_media_path(self, "image")
+
+    @hybrid_property
+    def image_url(self):
+        return _generate_media_url(self, "image")
+
+    @hybrid_property
     def json_model(self):
         return {
             "name": self.name,
@@ -347,16 +355,8 @@ class Card(SQLAlchemyBase, JSONModel):
             "endurance": self.endurance,
             "intelligence": self.intelligence,
             "category": self.category.value,
-            "image": self.image
+            "image": self.image_url
         }
-
-    @hybrid_property
-    def image_path(self):
-        return _generate_media_path(self, "image")
-
-    @hybrid_property
-    def image_url(self):
-        return _generate_media_url(self, "image")
 
 class Map(SQLAlchemyBase, JSONModel):
     __tablename__ = "maps"

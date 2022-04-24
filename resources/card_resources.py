@@ -40,7 +40,6 @@ class ResourceGetCardImage(DAMCoreResource):
         super(ResourceGetCardImage, self).on_get(req, resp, *args, **kwargs)
         try:
             aux_card = self.db_session.query(Card).filter(Card.id == kwargs["card_id"]).one()
-            aux_card.image_url()
             resp.media = aux_card.json_model
             resp.status = falcon.HTTP_200
         except NoResultFound:
@@ -52,12 +51,13 @@ class ResourceSetImage(DAMCoreResource):
         super(ResourceSetImage, self).on_post(req, resp, *args, **kwargs)
 
         aux_card = self.db_session.query(Card).filter(Card.id == kwargs["card_id"]).one()
+        card_path = aux_card.image_path
 
         # Get the file from form
         incoming_file = req.get_param("image")
 
         # Run the common part for storing
-        filename = utils.save_static_media_file(incoming_file, "../../" + STATIC_URL)
+        filename = utils.save_static_media_file(incoming_file, card_path)
 
         # Update db model
         aux_card.image = filename
