@@ -22,6 +22,8 @@ mylogger = logging.getLogger(__name__)
 class ResourceGetUserGames(DAMCoreResource):
     def on_get(self, req, resp, *args, **kwargs):
         super(ResourceGetUserGames, self).on_get(req, resp, *args, **kwargs)
+        mylogger.info(" Obtenint partides... ")
+
         try:
             games_json = []
             games_played = self.db_session.query(User_Game_Association).filter(User_Game_Association.user_id == 1)
@@ -38,7 +40,6 @@ class ResourceGetUserGames(DAMCoreResource):
                     "user2": user2.username,
                     "score2": games[1].score
                 }
-                #mylogger.info(game)
                 games_json.append(game)
             resp.media = games_json
             resp.status = falcon.HTTP_200

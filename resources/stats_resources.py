@@ -39,11 +39,3 @@ class ResourceUpdateUserStats(DAMCoreResource):
         except NoResultFound:
             raise falcon.HTTPBadRequest(description=messages.user_not_found)
 
-class ResourceCreateUserStats(DAMCoreResource):
- def on_put(self, req, resp, *args, **kwargs):
-        super(ResourceUpdateUserStats, self).on_put(req, resp, *args, **kwargs)
-
-        try:
-            resp.status = falcon.HTTP_200
-        except NoResultFound:
-            raise falcon.HTTPBadRequest(description=messages.user_not_found)

@@ -50,7 +50,7 @@ application.add_route("/user/{username}", user_resources.ResourceGetUserProfile(
 
 # put
 application.add_route("/user/profile/update/{user_id}", user_resources.ResourceUpdateUserProfile()) # Pendent de canviar el auth_user
-application.add_route("/user/unsuscribe/{user_id}", user_resources.ResourceUserUnsubscribe())
+application.add_route("/user/unsubscribe/{user_id}", user_resources.ResourceUserUnsubscribe())
 
 # delete
 application.add_route("/user/delete/{username}", user_resources.ResourceUserDelete())
@@ -72,15 +72,12 @@ application.add_route("/user/game/history/{user_id}", game_resources.ResourceGet
 
 # get
 application.add_route("/card/{card_id}", card_resources.ResourceGetCard()) # FET
-application.add_route("/card/image/{card_id}", card_resources.ResourceGetCardImage()) # Falta arreglar per retornar la imatge
+application.add_route("/card/image/{card_id}", card_resources.ResourceGetCardImage()) # FET
 
 # post
 application.add_route("/card/set_image/{card_id}", card_resources.ResourceSetImage()) # FET
 
 #STATS
-# post (Aquesta funcio es crida a l'hora de crear un nou usuari)
-## application.add_route("/stats/create", stats_resources.ResourceCreateUserStats())
-
 # put
 application.add_route("/stats/update", stats_resources.ResourceUpdateUserStats())
 
@@ -92,15 +89,12 @@ application.add_route("/stats/{user_id}", stats_resources.ResourceGetUserStats()
 application.add_route("/map/get", map_resources.ResourceGetRandomMap()) # FET
 
 #DECK
-# post
-application.add_route("/deck/create", deck_resources.ResourceCreateDeck())
-
 # put
 application.add_route("/deck/{deck_id}/update", deck_resources.ResourceUpdateDeck())
 
 #get
-application.add_route("/deck/{deck_id}", deck_resources.ResourceGetDeck())
-application.add_route("/decks", deck_resources.ResourceGetUserDecks())
+application.add_route("/deck/{deck_id}", deck_resources.ResourceGetDeck()) # Falta comprovar POSTMAN
+application.add_route("/decks/{user_id}", deck_resources.ResourceGetUserDecks()) # Falta comprovar POSTMAN
 
 #ACHIEVEMENTS
 # put

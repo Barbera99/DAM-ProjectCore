@@ -118,7 +118,8 @@ if __name__ == "__main__":
         phone='678954327',
         photo="foto_perfil_1.png",
         rank_id=1,
-        users_achievements = [achievement_1]
+        users_achievements = [achievement_1],
+        status = "active"
 
     )
     user_1.set_password("a1s2d3f4")
@@ -136,7 +137,8 @@ if __name__ == "__main__":
         phone='687324521',
         photo="foto_perfil_2.png",
         rank_id=1,
-        users_achievements=[achievement_1]
+        users_achievements=[achievement_1],
+        status = "active"
 
     )
     user_2.set_password("r45tgt")

@@ -154,6 +154,7 @@ class User(SQLAlchemyBase, JSONModel):
     phone = Column(Unicode(50))
     photo = Column(Unicode(255))
     rank_id = Column(Integer, ForeignKey("ranks.id", onupdate="CASCADE", ondelete="CASCADE"), nullable=False)
+    status = Column(Unicode(20))
 
     # Relació 1 a N entre Rank i Users
     users_rank = relationship("Rank", back_populates="rank_users")
