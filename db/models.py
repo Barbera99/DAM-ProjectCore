@@ -136,9 +136,6 @@ class Game(SQLAlchemyBase, JSONModel):
             "score2": score2
         }
 
-
-
-
 class User(SQLAlchemyBase, JSONModel):
     __tablename__ = "users"
 

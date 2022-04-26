@@ -52,7 +52,6 @@ class ResourceGetGame(DAMCoreResource):
     def on_get(self, req, resp, *args, **kwargs):
         super(ResourceGetGame, self).on_get(req, resp, *args, **kwargs)
         try:
-
             games = self.db_session.query(User_Game_Association).filter(User_Game_Association.game_id == kwargs["game_id"])
             date = self.db_session.query(Game).filter(Game.id == kwargs["game_id"]).one()
             user1 = self.db_session.query(User).filter(User.id == games[0].user_id).one()
@@ -65,8 +64,6 @@ class ResourceGetGame(DAMCoreResource):
                 "user2": user2.username,
                 "score2": games[1].score
             }
-            #mylogger.info(game)
-
             resp.media = game
             resp.status = falcon.HTTP_200
         except NoResultFound:
@@ -76,10 +73,21 @@ class ResourceGetGame(DAMCoreResource):
 class ResourceStartGame(DAMCoreResource):
     def on_post(self, req, resp, *args, **kwargs):
         super(ResourceStartGame, self).on_post(req, resp, *args, **kwargs)
-
+        game = Game()
+        ug = User_Game_Association()
         try:
-            resp.status = falcon.HTTP_200
-
+            game.date = datetime.datetime.now()
+            self.db_session.add(game)
+            self.db_session.commit()
+            game_id = self.db_session.query(Game).filter(Game.id == req.media["id"]).one()
+            try:
+                ug.user_id = kwargs["user_id"]
+                ug.game_id = game_id
+                self.db_session.add(ug)
+                self.db_session.commit()
+                resp.status = falcon.HTTP_200
+            except NoResultFound:
+                raise falcon.HTTPBadRequest(description=messages.game_not_found)
         except NoResultFound:
             raise falcon.HTTPBadRequest(description=messages.game_not_found)
 

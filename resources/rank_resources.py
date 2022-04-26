@@ -22,7 +22,6 @@ mylogger = logging.getLogger(__name__)
 class ResourceGetRankInfo(DAMCoreResource):
  def on_get(self, req, resp, *args, **kwargs):
         super(ResourceGetRankInfo, self).on_post(req, resp, *args, **kwargs)
-
         try:
             rank = self.db_session.query(Rank).filter(Rank.id == kwargs["id_rank"]).one()
             resp.media = rank.json_model

@@ -29,17 +29,16 @@ class ResourceGetUserAchievements(DAMCoreResource):
             for a in achievements_ids:
                 achievement = self.db_session.query(Achievement).filter(Achievement.id == a.achievement_id).one()
                 achievements_json.append(achievement.json_model)
-
             resp.media = achievements_json
             resp.status = falcon.HTTP_200
         except NoResultFound:
             raise falcon.HTTPBadRequest(description=messages.user_not_found)
 
 class ResourceUnlock(DAMCoreResource):
- def on_put(self, req, resp, *args, **kwargs):
-        super(ResourceUnlock, self).on_put(req, resp, *args, **kwargs)
-
+ def on_post(self, req, resp, *args, **kwargs):
+        super(ResourceUnlock, self).on_post(req, resp, *args, **kwargs)
         try:
+            resp.media
             resp.status = falcon.HTTP_200
         except NoResultFound:
             raise falcon.HTTPBadRequest(description=messages.user_not_found)

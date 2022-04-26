@@ -79,7 +79,7 @@ application.add_route("/card/set_image/{card_id}", card_resources.ResourceSetIma
 
 #STATS
 # put
-application.add_route("/stats/update", stats_resources.ResourceUpdateUserStats())
+application.add_route("/stats/{user_id}/update", stats_resources.ResourceUpdateUserStats())
 
 # get
 application.add_route("/stats/{user_id}", stats_resources.ResourceGetUserStats()) # FET
@@ -90,7 +90,7 @@ application.add_route("/map/get", map_resources.ResourceGetRandomMap()) # FET
 
 #DECK
 # put
-application.add_route("/deck/{deck_id}/update", deck_resources.ResourceUpdateDeck())
+application.add_route("/deck/{deck_id}/{card_id}/update", deck_resources.ResourceUpdateDeck())
 
 #get
 application.add_route("/deck/{deck_id}", deck_resources.ResourceGetDeck()) # Falta comprovar POSTMAN
@@ -98,7 +98,7 @@ application.add_route("/decks/{user_id}", deck_resources.ResourceGetUserDecks())
 
 #ACHIEVEMENTS
 # put
-application.add_route("/achievement/{achievement_id}/unlock", achievement_resources.ResourceUnlock())
+application.add_route("/achievement/{achievement_id}/{user_id}/unlock", achievement_resources.ResourceUnlock())
 
 # get
 application.add_route("/achievements/{user_id}", achievement_resources.ResourceGetUserAchievements()) # FET

@@ -39,7 +39,6 @@ class ResourceRegisterUser(DAMCoreResource):
         super(ResourceRegisterUser, self).on_post(req, resp, *args, **kwargs)
         mylogger.info("Creating default users...")
         user = User()
-
         try:
             try:
                 aux_genere = GenereEnum(req.media["genere"].upper())
@@ -50,31 +49,27 @@ class ResourceRegisterUser(DAMCoreResource):
             user.email = req.media["email"]
             user.name = req.media["name"]
             user.surname = req.media["surname"]
-
             date = datetime.strptime(req.media["birthdate"], '%Y-%m-%d')
             user.birthdate = date
-
             user.genere = aux_genere
-
             user.rank_id = 1
-
             user.phone = req.media["phone"]
             user.photo = req.media["photo"]
             user.status = "active"
-
             self.db_session.add(user)
-
             try:
                 self.db_session.commit()
                 current_user = self.db_session.query(User).filter(User.username == req.media["username"]).one()
                 createDeck(current_user.id)
                 createStats(current_user.id)
+                try:
+                    self.db_session.commit()
+                except IntegrityError:
+                    raise falcon.HTTPBadRequest(description=messages.database_error)
             except IntegrityError:
                 raise falcon.HTTPBadRequest(description=messages.database_error)
-
         except KeyError:
             raise falcon.HTTPBadRequest(description=messages.parameters_invalid)
-
         resp.status = falcon.HTTP_200
 
 
@@ -133,11 +128,10 @@ class ResourceUpdateUserProfile(DAMCoreResource):
 
 class ResourceUserUnsubscribe(DAMCoreResource):
     @jsonschema.validate(SchemaRegisterUser)
-    def on_post(self, req, resp, *args, **kwargs):
-        super(ResourceUserUnsubscribe, self).on_post(req, resp, *args, **kwargs)
-        mylogger.info("Unsubscribing user ")
+    def on_put(self, req, resp, *args, **kwargs):
+        super(ResourceUserUnsubscribe, self).on_put(req, resp, *args, **kwargs)
+        mylogger.info("Unsubscribing user...")
         try:
-            print(kwargs["user_id"])
             aux_user = self.db_session.query(User).filter(User.id == kwargs["user_id"]).one()
             aux_user.status = "inactive"
             self.db_session.add(aux_user)

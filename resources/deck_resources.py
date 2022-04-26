@@ -24,6 +24,8 @@ class ResourceUpdateDeck(DAMCoreResource):
         super(ResourceUpdateDeck, self).on_put(req, resp, *args, **kwargs)
 
         try:
+            aux_deck = self.db_session.query(Deck).filter(Deck.id == kwargs["id"]).one()
+            aux_deck.
             resp.status = falcon.HTTP_200
         except NoResultFound:
             raise falcon.HTTPBadRequest(description=messages.user_not_found)
@@ -44,15 +46,14 @@ class ResourceGetUserDecks(DAMCoreResource):
         super(ResourceGetUserDecks, self).on_get(req, resp, *args, **kwargs)
         mylogger.info("Obtenint baralles d'un usuari...")
         try:
-            games_json = []
-            decks = self.db_session.query(Deck).filter(Deck.user_id == kwargs["id"])
+            decks_json = []
+            decks = self.db_session.query(Deck).filter(Deck.user_id == kwargs["id"]).all()
             for d in decks:
                 deck = {
                     "id": d.id,
-                    "user_id": d.user_id
                 }
-                games_json.append(deck)
-            resp.media = games_json
+                decks_json.append(deck)
+            resp.media = decks_json
             resp.status = falcon.HTTP_200
         except NoResultFound:
             raise falcon.HTTPBadRequest(description=messages.user_not_found)

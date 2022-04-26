@@ -26,7 +26,6 @@ class ResourceGetRandomMap(DAMCoreResource):
         try:
             maps = self.db_session.query(Map).all()
             n = random.randint(0, len(maps) - 1)
-
             resp.media = maps[n].json_model
             resp.status = falcon.HTTP_200
         except NoResultFound:
