@@ -119,11 +119,7 @@ class Game(SQLAlchemyBase, JSONModel):
     def json_game(self, user1, user2, score1, score2):
         return {
             "id": self.id,
-            "date": self.date,
-            "user1": user1,
-            "score1": score1,
-            "user2": user2,
-            "score2": score2
+            "date": self.date
         }
 
 class User(SQLAlchemyBase, JSONModel):
@@ -309,10 +305,18 @@ class Deck(SQLAlchemyBase, JSONModel):
 
 class Deck_Card_Association(SQLAlchemyBase, JSONModel):
     __tablename__ = "deck_card_association"
-    deck_id = Column(Integer,ForeignKey("deck.id", onupdate="CASCADE", ondelete="CASCADE"),nullable=False, primary_key = True)
+    deck_id = Column(Integer, ForeignKey("deck.id", onupdate="CASCADE", ondelete="CASCADE"), nullable=False, primary_key = True)
     deck_association_card = relationship("Deck", back_populates="deck_cards")
-    card_id = Column(Integer, ForeignKey("cards.id", onupdate="CASCADE", ondelete="CASCADE"),nullable=False, primary_key = True)
+    card_id = Column(Integer, ForeignKey("cards.id", onupdate="CASCADE", ondelete="CASCADE"), nullable=False, primary_key = True)
     card_association_deck = relationship("Card", back_populates="cards_deck")
+
+    @hybrid_property
+    def json_model(self):
+        return {
+            "deck_id": self.deck_id,
+            "card_id": self.card_id
+        }
+
 
 class Card(SQLAlchemyBase, JSONModel):
     __tablename__ = "cards"
@@ -343,6 +347,7 @@ class Card(SQLAlchemyBase, JSONModel):
     @hybrid_property
     def json_model(self):
         return {
+            "id": self.id,
             "name": self.name,
             "strength": self.strength,
             "speed": self.speed,
