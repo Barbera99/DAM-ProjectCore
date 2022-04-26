@@ -90,7 +90,7 @@ application.add_route("/map/get", map_resources.ResourceGetRandomMap()) # FET
 
 #DECK
 # put
-application.add_route("/deck/{deck_id}/{card_id}/update", deck_resources.ResourceUpdateDeck())
+application.add_route("/deck/{deck_id}/{r_card_id}/{i_card_id}/update", deck_resources.ResourceUpdateDeck())
 
 #get
 application.add_route("/deck/{deck_id}", deck_resources.ResourceGetDeck()) # Falta comprovar POSTMAN

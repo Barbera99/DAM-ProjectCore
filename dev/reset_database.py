@@ -9,7 +9,7 @@ from sqlalchemy.sql import text
 
 import db
 import settings
-from db.models import SQLAlchemyBase, User, GenereEnum, UserToken, Rank, Stats, Achievement, Deck, Card, Game, Map, CategoryEnum, Games_Map, User_Achievement, User_Game_Association
+from db.models import SQLAlchemyBase, User, GenereEnum, UserToken, Rank, Stats, Achievement, Deck, Card, Game, Map, CategoryEnum, Games_Map, User_Achievement, User_Game_Association, Deck_Card_Association
 from settings import DEFAULT_LANGUAGE
 
 # LOGGING
@@ -33,7 +33,7 @@ if __name__ == "__main__":
 
     # -------------------- REMOVE AND CREATE TABLES --------------------
     mylogger.info("Removing database...")
-    SQLAlchemyBase.metadata.drop_all(db.DB_ENGINE)
+    # SQLAlchemyBase.metadata.drop_all(db.DB_ENGINE)
     mylogger.info("Creating database...")
     SQLAlchemyBase.metadata.create_all(db.DB_ENGINE)
 
@@ -209,10 +209,34 @@ if __name__ == "__main__":
     deck = Deck(
         user_id=1,
         created_at = datetime.datetime.now(),
-        deck_card = [card_1, card_2, card_3, card_4, card_5]
     )
 
+    # -------------------- CREATE Deck_Card_Association --------------------
+    mylogger.info("Creating default Deck_Card_Association...")
+    deck_card_Association_1 = Deck_Card_Association(
+        deck_id = 1,
+        card_id = 1
+    )
 
+    deck_card_Association_2 = Deck_Card_Association(
+        deck_id=1,
+        card_id=2
+    )
+
+    deck_card_Association_3 = Deck_Card_Association(
+        deck_id=1,
+        card_id=3
+    )
+
+    deck_card_Association_4 = Deck_Card_Association(
+        deck_id=1,
+        card_id=4
+    )
+
+    deck_card_Association_5 = Deck_Card_Association(
+        deck_id=1,
+        card_id=5
+    )
     # -------------------- CREATE STATS --------------------
     mylogger.info("Creating default stats...")
     stats = Stats(
@@ -236,7 +260,6 @@ if __name__ == "__main__":
     )
 
 
-
     # ---------------- AFEGIR LES DADES EN ORDRE DEGUT A LES RELACIONS -------------- #
     mylogger.info("Inserint dades")
     db_session.add(user_1)
@@ -255,9 +278,11 @@ if __name__ == "__main__":
     db_session.add(card_4)
     db_session.add(card_5)
     db_session.add(deck)
+    db_session.add(deck_card_Association_1)
+    db_session.add(deck_card_Association_2)
+    db_session.add(deck_card_Association_3)
+    db_session.add(deck_card_Association_4)
+    db_session.add(deck_card_Association_5)
     db_session.add(stats)
-
-
-
     db_session.commit()
     db_session.close()

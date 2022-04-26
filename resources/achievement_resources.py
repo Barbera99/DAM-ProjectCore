@@ -37,6 +37,7 @@ class ResourceGetUserAchievements(DAMCoreResource):
 class ResourceUnlock(DAMCoreResource):
  def on_post(self, req, resp, *args, **kwargs):
         super(ResourceUnlock, self).on_post(req, resp, *args, **kwargs)
+
         try:
             resp.media
             resp.status = falcon.HTTP_200
