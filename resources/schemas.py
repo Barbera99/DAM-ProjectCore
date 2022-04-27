@@ -24,4 +24,13 @@ SchemaRegisterUser = {
     },
     "required": ["username", "password", "email", "name", "surname"]
 }
-
+SchemaGameEnd = {
+    "type": "object",
+    "properties": {
+        "user1_id": {"type": "integer"},
+        "user1_score": {"type": "integer"},
+        "user2_id": {"type": "integer"},
+        "user2_score": {"type": "integer"}
+    },
+    "required": ["user1_id", "user1_score", "user2_id", "user2_score"]
+}

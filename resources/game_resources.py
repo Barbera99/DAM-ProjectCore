@@ -12,7 +12,7 @@ import messages
 from db.models import User, Game, GenereEnum, User_Game_Association
 from hooks import requires_auth
 from resources.base_resources import DAMCoreResource
-from resources.schemas import SchemaRegisterUser
+from resources.schemas import SchemaGameEnd
 from datetime import datetime
 
 mylogger = logging.getLogger(__name__)
@@ -75,16 +75,27 @@ class ResourceStartGame(DAMCoreResource):
         super(ResourceStartGame, self).on_post(req, resp, *args, **kwargs)
         game = Game()
         ug = User_Game_Association()
+        ugia = User_Game_Association()
         try:
-            game.date = datetime.datetime.now()
+            game.date = datetime.now()
             self.db_session.add(game)
             self.db_session.commit()
-            game_id = self.db_session.query(Game).filter(Game.id == req.media["id"]).one()
+            self.db_session.refresh(game)
             try:
                 ug.user_id = kwargs["user_id"]
-                ug.game_id = game_id
+                ug.game_id = game.id
+                ug.score = 0
+                #ia
+                ugia.user_id = 1
+                ugia.game_id = game.id
+                ugia.score = 0
                 self.db_session.add(ug)
+                self.db_session.add(ugia)
                 self.db_session.commit()
+                game_json = {
+                    "game_id": game.id
+                }
+                resp.media = game_json
                 resp.status = falcon.HTTP_200
             except NoResultFound:
                 raise falcon.HTTPBadRequest(description=messages.game_not_found)
@@ -94,5 +105,22 @@ class ResourceStartGame(DAMCoreResource):
 
 #@falcon.before(requires_auth)
 class ResourceEndGame(DAMCoreResource):
-    def on_get(self, req, resp, *args, **kwargs):
-        super(ResourceEndGame, self).on_get(req, resp, *args, **kwargs)
+    @jsonschema.validate(SchemaGameEnd)
+    def on_put(self, req, resp, *args, **kwargs):
+        super(ResourceEndGame, self).on_put(req, resp, *args, **kwargs)
+        try:
+            ug_arr = self.db_session.query(User_Game_Association).filter(User_Game_Association.game_id == kwargs["game_id"]).all()
+            ug1 = ug_arr[0]
+            ug2 = ug_arr[1]
+            if ug1.user_id == req.media["user1_id"]:
+                ug1.score = req.media["user1_score"]
+                ug2.score = req.media["user2_score"]
+            else:
+                ug2.score = req.media["user1_score"]
+                ug1.score = req.media["user2_score"]
+
+            self.db_session.commit()
+            resp.status = falcon.HTTP_200
+
+        except NoResultFound:
+            raise falcon.HTTPBadRequest(description=messages.game_not_found)

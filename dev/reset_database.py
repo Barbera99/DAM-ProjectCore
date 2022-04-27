@@ -107,6 +107,25 @@ if __name__ == "__main__":
     mylogger.info("Creating default users...")
 
     # noinspection PyArgumentList
+    ia = User(
+        # created_at=datetime.datetime.now(),
+        username="IA Bot",
+        email="iabot@gmail.com",
+        name="IABot",
+        surname="Bot",
+        birthdate=datetime.datetime(1789, 1, 1),
+        genere=GenereEnum.male,
+        phone='678954327',
+        photo="foto_perfil_1.png",
+        rank_id=1,
+        users_achievements=[achievement_1],
+        status="active"
+    )
+    ia.set_password("a1s2d3f4")
+    # ia.tokens.append(UserToken(token="656e50e154865a5dc469b80437ed2f963b8f58c8857b66c9bf"))
+
+
+    # noinspection PyArgumentList
     user_1= User(
         #created_at=datetime.datetime.now(),
         username="usuari1",
@@ -262,6 +281,7 @@ if __name__ == "__main__":
 
     # ---------------- AFEGIR LES DADES EN ORDRE DEGUT A LES RELACIONS -------------- #
     mylogger.info("Inserint dades")
+    db_session.add(ia)
     db_session.add(user_1)
     db_session.add(user_2)
     db_session.add(rank)

@@ -116,7 +116,7 @@ class Game(SQLAlchemyBase, JSONModel):
 
     # TODO: Modifiqueu aquest part amb els nous canvis
     @hybrid_property
-    def json_game(self, user1, user2, score1, score2):
+    def json_game(self):
         return {
             "id": self.id,
             "date": self.date

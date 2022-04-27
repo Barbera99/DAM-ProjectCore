@@ -57,10 +57,10 @@ application.add_route("/user/delete/{username}", user_resources.ResourceUserDele
 
 #GAME
 # post
-application.add_route("/game/start/{user_id}", game_resources.ResourceStartGame())
+application.add_route("/game/start/{user_id}", game_resources.ResourceStartGame()) # FET (Retorna la ID del game que hem inserit)
 
 # put
-application.add_route("/game/end/{game_id}", game_resources.ResourceEndGame())
+application.add_route("/game/end/{game_id}", game_resources.ResourceEndGame()) # FET
 
 # get
 application.add_route("/game/show/{game_id}", game_resources.ResourceGetGame()) # FET
