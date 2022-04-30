@@ -58,7 +58,7 @@ class ResourceGetGame(DAMCoreResource):
             user2 = self.db_session.query(User).filter(User.id == games[1].user_id).one()
             game = {
                 "id": kwargs["game_id"],
-                "date": date.date.strftime("%m/%d/%Y, %H:%M:%S"),
+                "date": date.date.strftime("%m/%d/%Y %H:%M:%S"),
                 "user1": user1.username,
                 "score1": games[0].score,
                 "user2": user2.username,

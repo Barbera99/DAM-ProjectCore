@@ -37,7 +37,7 @@ class ResourceRegisterUser(DAMCoreResource):
     @jsonschema.validate(SchemaRegisterUser)
     def on_post(self, req, resp, *args, **kwargs):
         super(ResourceRegisterUser, self).on_post(req, resp, *args, **kwargs)
-        mylogger.info("Creating default users...")
+        mylogger.info("Creant usuari")
         user = User()
         try:
             try:
@@ -57,46 +57,38 @@ class ResourceRegisterUser(DAMCoreResource):
             user.photo = req.media["photo"]
             user.status = "active"
             self.db_session.add(user)
+            self.db_session.commit()
+            self.db_session.refresh(user)
             try:
+
+                deck = Deck()
+                deck.user_id = user.id
+                self.db_session.add(deck)
                 self.db_session.commit()
-                current_user = self.db_session.query(User).filter(User.username == req.media["username"]).one()
-                createDeck(current_user.id)
-                createStats(current_user.id)
+
                 try:
+                    stats = Stats()
+                    stats.user_id = user.id
+                    stats.games_Played = 0
+                    stats.ranked_Wins = 0
+                    stats.ranked_Defeats = 0
+                    stats.normal_Wins = 0
+                    stats.normal_Defeats = 0
+                    stats.level = 1
+                    stats.medals = 0
+
+                    self.db_session.add(stats)
                     self.db_session.commit()
                 except IntegrityError:
-                    raise falcon.HTTPBadRequest(description=messages.database_error)
+                    raise falcon.HTTPBadRequest(description="Error al crear stats")
             except IntegrityError:
-                raise falcon.HTTPBadRequest(description=messages.database_error)
+                raise falcon.HTTPBadRequest(description="Error al crear baralla")
         except KeyError:
             raise falcon.HTTPBadRequest(description=messages.parameters_invalid)
         resp.status = falcon.HTTP_200
 
-
-''' Funció auxiliar per a crear la baralla'''
-def createDeck(self, user_id):
-    mylogger.info("Creating user decks...")
-    deck = Deck()
-    try:
-        deck.user_id = user_id
-        self.db_session.add(deck)
-    except KeyError:
-        raise falcon.HTTPBadRequest(description=messages.parameters_invalid)
-
-
-''' Funció auxiliar per a crear els Stats'''
-def createStats(self, user_id):
-    mylogger.info("Creating user stats...")
-    stats = Stats()
-    try:
-        stats.user_id = user_id
-        self.db_session.add(stats)
-    except KeyError:
-        raise falcon.HTTPBadRequest(description=messages.parameters_invalid)
-
-
 class ResourceUpdateUserProfile(DAMCoreResource):
-    @jsonschema.validate(SchemaRegisterUser)
+    #@jsonschema.validate(SchemaRegisterUser)
     def on_put(self, req, resp, *args, **kwargs):
         super(ResourceUpdateUserProfile, self).on_put(req, resp, *args, **kwargs)
         mylogger.info("Updating user ")
@@ -127,12 +119,11 @@ class ResourceUpdateUserProfile(DAMCoreResource):
 
 
 class ResourceUserUnsubscribe(DAMCoreResource):
-    @jsonschema.validate(SchemaRegisterUser)
     def on_put(self, req, resp, *args, **kwargs):
         super(ResourceUserUnsubscribe, self).on_put(req, resp, *args, **kwargs)
         mylogger.info("Unsubscribing user...")
         try:
-            aux_user = self.db_session.query(User).filter(User.id == kwargs["user_id"]).one()
+            aux_user = self.db_session.query(User).filter(User.id == req.media["user_id"]).one()
             aux_user.status = "inactive"
             self.db_session.add(aux_user)
             try:
@@ -145,7 +136,6 @@ class ResourceUserUnsubscribe(DAMCoreResource):
 
 
 class ResourceUserDelete(DAMCoreResource):
-    @jsonschema.validate(SchemaRegisterUser)
     def on_put(self, req, resp, *args, **kwargs):
         super(ResourceUserDelete, self).on_put(req, resp, *args, **kwargs)
         mylogger.info("Deleting user ")

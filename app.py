@@ -43,14 +43,14 @@ application.add_route("/account/delete_token", account_resources.ResourceDeleteU
 
 #USERS
 # post
-application.add_route("/users/register", user_resources.ResourceRegisterUser()) # fet pero falta inicialitzar stats, baralles, ...
+application.add_route("/users/register", user_resources.ResourceRegisterUser()) # FET
 
 # get
 application.add_route("/user/{username}", user_resources.ResourceGetUserProfile()) # FET
 
 # put
 application.add_route("/user/profile/update/{user_id}", user_resources.ResourceUpdateUserProfile()) # Pendent de canviar el auth_user
-application.add_route("/user/unsubscribe/{user_id}", user_resources.ResourceUserUnsubscribe())
+application.add_route("/user/unsubscribe/", user_resources.ResourceUserUnsubscribe()) # FET
 
 # delete
 application.add_route("/user/delete/{username}", user_resources.ResourceUserDelete())
