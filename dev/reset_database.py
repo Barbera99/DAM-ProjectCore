@@ -33,7 +33,7 @@ if __name__ == "__main__":
 
     # -------------------- REMOVE AND CREATE TABLES --------------------
     mylogger.info("Removing database...")
-    # SQLAlchemyBase.metadata.drop_all(db.DB_ENGINE)
+    SQLAlchemyBase.metadata.drop_all(db.DB_ENGINE)
     mylogger.info("Creating database...")
     SQLAlchemyBase.metadata.create_all(db.DB_ENGINE)
 
@@ -141,7 +141,7 @@ if __name__ == "__main__":
         status = "active"
 
     )
-    user_1.set_password("a1s2d3f4")
+    user_1.set_password("1234")
     #user_1.tokens.append(UserToken(token="656e50e154865a5dc469b80437ed2f963b8f58c8857b66c9bf"))
 
     # noinspection PyArgumentList

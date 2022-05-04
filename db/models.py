@@ -143,7 +143,8 @@ class User(SQLAlchemyBase, JSONModel):
     users_rank = relationship("Rank", back_populates="rank_users")
 
     # Relació 1 a N entre User i UserToken.
-    user_tokens = relationship("UserToken", back_populates="tokens_user", cascade="all, delete-orphan")
+    tokens = relationship("UserToken", back_populates="user", cascade="all, delete-orphan")
+    #user_tokens = relationship("UserToken", back_populates="tokens_user", cascade="all, delete-orphan")
     
     # Relació 1 a 1 entre User i Stats.
     user_stats = relationship("Stats", uselist=False, back_populates="stats_user")
@@ -217,7 +218,7 @@ class UserToken(SQLAlchemyBase):
     id = Column(Integer, primary_key=True)
     token = Column(Unicode(50), nullable=False, unique=True)
     user_id = Column(Integer, ForeignKey("users.id", onupdate="CASCADE", ondelete="CASCADE"), nullable=False)
-    tokens_user  = relationship("User", back_populates="user_tokens")
+    user = relationship("User", back_populates="tokens")
 
 class Rank(SQLAlchemyBase, JSONModel):
     __tablename__ = "ranks"
