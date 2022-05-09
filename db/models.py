@@ -132,10 +132,10 @@ class User(SQLAlchemyBase, JSONModel):
     email = Column(Unicode(255), nullable=False)
     name = Column(Unicode(50), nullable=False)
     surname = Column(Unicode(50), nullable=False)
-    birthdate = Column(Date)
+    birthdate = Column(Date, nullable=True)
     genere = Column(Enum(GenereEnum), nullable=True)
-    phone = Column(Unicode(50))
-    photo = Column(Unicode(255))
+    phone = Column(Unicode(50), nullable=True)
+    photo = Column(Unicode(255), nullable=True)
     rank_id = Column(Integer, ForeignKey("ranks.id", onupdate="CASCADE", ondelete="CASCADE"), nullable=False)
     status = Column(Unicode(20))
 

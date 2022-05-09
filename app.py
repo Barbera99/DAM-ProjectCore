@@ -43,7 +43,7 @@ application.add_route("/account/delete_token", account_resources.ResourceDeleteU
 
 #USERS
 # post
-application.add_route("/users/register", user_resources.ResourceRegisterUser()) # FET
+application.add_route("/user/register", user_resources.ResourceRegisterUser()) # FET
 
 # get
 application.add_route("/user/{username}", user_resources.ResourceGetUserProfile()) # FET

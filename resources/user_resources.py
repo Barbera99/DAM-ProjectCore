@@ -40,21 +40,21 @@ class ResourceRegisterUser(DAMCoreResource):
         mylogger.info("Creant usuari")
         user = User()
         try:
+            '''
             try:
                 aux_genere = GenereEnum(req.media["genere"].upper())
             except ValueError:
                 raise falcon.HTTPBadRequest(description=messages.genere_invalid)
+            '''
             user.username = req.media["username"]
             user.set_password(req.media["password"])
             user.email = req.media["email"]
             user.name = req.media["name"]
             user.surname = req.media["surname"]
-            date = datetime.strptime(req.media["birthdate"], '%Y-%m-%d')
-            user.birthdate = date
-            user.genere = aux_genere
+            #date = datetime.strptime(req.media["birthdate"], '%Y-%m-%d')
+            #user.birthdate = date
+            #user.genere = aux_genere
             user.rank_id = 1
-            user.phone = req.media["phone"]
-            user.photo = req.media["photo"]
             user.status = "active"
             self.db_session.add(user)
             self.db_session.commit()
@@ -86,6 +86,8 @@ class ResourceRegisterUser(DAMCoreResource):
         except KeyError:
             raise falcon.HTTPBadRequest(description=messages.parameters_invalid)
         resp.status = falcon.HTTP_200
+        resp.media = {"id_user": user.id}
+
 
 class ResourceUpdateUserProfile(DAMCoreResource):
     #@jsonschema.validate(SchemaRegisterUser)
