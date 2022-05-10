@@ -37,7 +37,7 @@ class ResourceRegisterUser(DAMCoreResource):
     @jsonschema.validate(SchemaRegisterUser)
     def on_post(self, req, resp, *args, **kwargs):
         super(ResourceRegisterUser, self).on_post(req, resp, *args, **kwargs)
-        mylogger.info("Creant usuari")
+        mylogger.info("Creant usuari...")
         user = User()
         try:
             '''
@@ -85,8 +85,9 @@ class ResourceRegisterUser(DAMCoreResource):
                 raise falcon.HTTPBadRequest(description="Error al crear baralla")
         except KeyError:
             raise falcon.HTTPBadRequest(description=messages.parameters_invalid)
-        resp.status = falcon.HTTP_200
         resp.media = {"id_user": user.id}
+        resp.status = falcon.HTTP_200
+
 
 
 class ResourceUpdateUserProfile(DAMCoreResource):

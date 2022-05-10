@@ -42,7 +42,8 @@ class ResourceCreateUserToken(DAMCoreResource):
             current_token = current_user.create_token()
             try:
                 self.db_session.commit()
-                resp.media = {"token": current_token.token}
+                mylogger.info("CreateUserToken token: " + current_token.token)
+                resp.media = {"token": current_token.token, "user_id": current_user.id}
                 resp.status = falcon.HTTP_200
             except Exception as e:
                 mylogger.critical("{}:{}".format(messages.error_saving_user_token, e))
