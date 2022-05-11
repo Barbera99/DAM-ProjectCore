@@ -44,8 +44,13 @@ class ResourceGetDeck(DAMCoreResource):
         super(ResourceGetDeck, self).on_get(req, resp, *args, **kwargs)
         mylogger.info("Obtenint baralla individual...")
         try:
-            aux_deck = self.db_session.query(Deck).filter(Deck.id == kwargs["id"]).one()
-            resp.media = aux_deck.json_model
+            cards_json = []
+            aux_deck = self.db_session.query(Deck_Card_Association).filter(Deck_Card_Association.deck_id == kwargs["id"]).all()
+            for c in aux_deck:
+                aux_card = self.db_session.query(Card).filter(Card.id == c.id).one()
+                card = aux_card.json_model
+                cards_json.append(card)
+            resp.media = cards_json
             resp.status = falcon.HTTP_200
         except NoResultFound:
             raise falcon.HTTPBadRequest(description=messages.user_not_found)
