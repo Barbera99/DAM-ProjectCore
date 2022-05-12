@@ -39,9 +39,6 @@ class ResourceRegisterUser(DAMCoreResource):
         super(ResourceRegisterUser, self).on_post(req, resp, *args, **kwargs)
         mylogger.info("Creant usuari...")
         user = User()
-        mylogger.info(req.media["username"])
-        mylogger.info(req.media["password"])
-        mylogger.info(req.media["email"])
         try:
             '''
             try:
