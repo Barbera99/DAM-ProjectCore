@@ -52,12 +52,10 @@ class ResourceRegisterUser(DAMCoreResource):
             self.db_session.commit()
             self.db_session.refresh(user)
             try:
-
                 deck = Deck()
                 deck.user_id = user.id
                 self.db_session.add(deck)
                 self.db_session.commit()
-
                 try:
                     stats = Stats()
                     stats.user_id = user.id
@@ -68,7 +66,6 @@ class ResourceRegisterUser(DAMCoreResource):
                     stats.normal_Defeats = 0
                     stats.level = 1
                     stats.medals = 0
-
                     self.db_session.add(stats)
                     self.db_session.commit()
                 except IntegrityError:
