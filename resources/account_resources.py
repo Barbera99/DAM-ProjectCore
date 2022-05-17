@@ -53,7 +53,7 @@ class ResourceCreateUserToken(DAMCoreResource):
             raise falcon.HTTPUnauthorized(description=messages.user_not_found)
 
 
-@falcon.before(requires_auth)
+#@falcon.before(requires_auth)
 class ResourceDeleteUserToken(DAMCoreResource):
     @jsonschema.validate(SchemaUserToken)
     def on_post(self, req, resp, *args, **kwargs):
@@ -93,7 +93,6 @@ class ResourceAccountUserProfile(DAMCoreResource):
 class ResourceAccountUpdateProfileImage(DAMCoreResource):
     def on_post(self, req, resp, *args, **kwargs):
         super(ResourceAccountUpdateProfileImage, self).on_post(req, resp, *args, **kwargs)
-
 
         # Get the user from the token
         current_user = req.context["auth_user"]
