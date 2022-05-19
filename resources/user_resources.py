@@ -40,7 +40,6 @@ class ResourceRegisterUser(DAMCoreResource):
         mylogger.info("Creant usuari...")
         user = User()
         try:
-
             user.username = req.media["username"]
             user.set_password(req.media["password"])
             user.email = req.media["email"]
@@ -77,8 +76,6 @@ class ResourceRegisterUser(DAMCoreResource):
         resp.media = {"id_user": user.id}
         resp.status = falcon.HTTP_200
 
-
-
 class ResourceUpdateUserProfile(DAMCoreResource):
     #@jsonschema.validate(SchemaRegisterUser)
     def on_put(self, req, resp, *args, **kwargs):
@@ -107,7 +104,6 @@ class ResourceUpdateUserProfile(DAMCoreResource):
             resp.status = falcon.HTTP_200
         except KeyError:
             raise falcon.HTTPBadRequest(description=messages.parameters_invalid)
-
 
 
 class ResourceUserUnsubscribe(DAMCoreResource):

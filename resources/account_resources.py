@@ -24,7 +24,7 @@ mylogger = logging.getLogger(__name__)
 class ResourceCreateUserToken(DAMCoreResource):
     def on_post(self, req, resp, *args, **kwargs):
         super(ResourceCreateUserToken, self).on_post(req, resp, *args, **kwargs)
-
+        mylogger.info("LOGIN")
         basic_auth_raw = req.get_header("Authorization")
         if basic_auth_raw is not None:
             basic_auth = basic_auth_raw.split()[1]
@@ -55,26 +55,21 @@ class ResourceCreateUserToken(DAMCoreResource):
 
 #@falcon.before(requires_auth)
 class ResourceDeleteUserToken(DAMCoreResource):
-    @jsonschema.validate(SchemaUserToken)
     def on_post(self, req, resp, *args, **kwargs):
         super(ResourceDeleteUserToken, self).on_post(req, resp, *args, **kwargs)
-
-        current_user = req.context["auth_user"]
-        selected_token_string = req.media["token"]
+        mylogger.info("Deleting token.....")
+        mylogger.info(req.media)
+        selected_token_string = req.media
         selected_token = self.db_session.query(UserToken).filter(UserToken.token == selected_token_string).one_or_none()
-
         if selected_token is not None:
-            if selected_token.user.id == current_user.id:
-                try:
-                    self.db_session.delete(selected_token)
-                    self.db_session.commit()
-
-                    resp.status = falcon.HTTP_200
-                except Exception as e:
-                    mylogger.critical("{}:{}".format(messages.error_removing_user_token, e))
-                    raise falcon.HTTPInternalServerError()
-            else:
-                raise falcon.HTTPUnauthorized(description=messages.token_doesnt_belongs_current_user)
+            try:
+                mylogger.info("Id de l'usuari coincideix")
+                self.db_session.delete(selected_token)
+                self.db_session.commit()
+                resp.status = falcon.HTTP_200
+            except Exception as e:
+                mylogger.critical("{}:{}".format(messages.error_removing_user_token, e))
+                raise falcon.HTTPInternalServerError()
         else:
             raise falcon.HTTPUnauthorized(description=messages.token_not_found)
 
@@ -89,7 +84,7 @@ class ResourceAccountUserProfile(DAMCoreResource):
         resp.media = current_user.json_model
         resp.status = falcon.HTTP_200
 
-@falcon.before(requires_auth)
+#@falcon.before(requires_auth)
 class ResourceAccountUpdateProfileImage(DAMCoreResource):
     def on_post(self, req, resp, *args, **kwargs):
         super(ResourceAccountUpdateProfileImage, self).on_post(req, resp, *args, **kwargs)
