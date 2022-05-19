@@ -45,9 +45,9 @@ class ResourceGetDeck(DAMCoreResource):
         mylogger.info("Obtenint baralla individual...")
         try:
             cards_json = []
-            aux_deck = self.db_session.query(Deck_Card_Association).filter(Deck_Card_Association.deck_id == kwargs["id"]).all()
+            aux_deck = self.db_session.query(Deck_Card_Association).filter(Deck_Card_Association.deck_id == kwargs["deck_id"]).all()
             for c in aux_deck:
-                aux_card = self.db_session.query(Card).filter(Card.id == c.id).one()
+                aux_card = self.db_session.query(Card).filter(Card.id == c.card_id).one()
                 card = aux_card.json_model
                 cards_json.append(card)
             resp.media = cards_json
@@ -62,7 +62,7 @@ class ResourceGetUserDecks(DAMCoreResource):
         mylogger.info("Obtenint baralles d'un usuari...")
         try:
             decks_json = []
-            decks = self.db_session.query(Deck).filter(Deck.user_id == kwargs["id"]).all()
+            decks = self.db_session.query(Deck).filter(Deck.user_id == kwargs["user_id"]).all()
             for d in decks:
                 deck = {
                     "id": d.id,
