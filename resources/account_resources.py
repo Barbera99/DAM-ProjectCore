@@ -67,6 +67,7 @@ class ResourceDeleteUserToken(DAMCoreResource):
                 self.db_session.delete(selected_token)
                 self.db_session.commit()
                 resp.status = falcon.HTTP_200
+                mylogger.info(resp.status)
             except Exception as e:
                 mylogger.critical("{}:{}".format(messages.error_removing_user_token, e))
                 raise falcon.HTTPInternalServerError()

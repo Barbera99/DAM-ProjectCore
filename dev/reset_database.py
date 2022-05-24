@@ -40,59 +40,130 @@ if __name__ == "__main__":
 # -------------------- CREATE CARDS --------------------
     mylogger.info("Creating default card_1...")
     card_1 = Card(
-        name="Lebron",
-        strength=45,
-        speed=34,
-        agility=35,
-        endurance=37,
-        intelligence=48,
-        category=CategoryEnum.legendary
+        name="Ninja",
+        strength=35,
+        speed=75,
+        agility=90,
+        endurance=20,
+        intelligence=65,
+        category=CategoryEnum.epic
     )
 
     mylogger.info("Creating default card_2...")
     card_2 = Card(
-        name="Curry",
+        name="T-Dummy",
         strength=30,
-        speed=40,
-        agility=30,
-        endurance=40,
-        intelligence=40,
-        category=CategoryEnum.legendary
+        speed=30,
+        agility=10,
+        endurance=95,
+        intelligence=0,
+        category=CategoryEnum.common
     )
 
     mylogger.info("Creating default card_3...")
     card_3 = Card(
-        name="Kevin Durant",
-        strength=30,
-        speed=45,
-        agility=40,
-        endurance=40,
-        intelligence=40,
+        name="Sonic",
+        strength=10,
+        speed=99,
+        agility=85,
+        endurance=95,
+        intelligence=20,
         category=CategoryEnum.legendary
     )
 
     mylogger.info("Creating default card_4...")
     card_4 = Card(
-        name="Rajon Rondo",
-        strength=10,
-        speed=45,
+        name="Linda",
+        strength=75,
+        speed=40,
         agility=40,
-        endurance=30,
-        intelligence=45,
-        category=CategoryEnum.epic
+        endurance=40,
+        intelligence=30,
+        category=CategoryEnum.rare
     )
 
     mylogger.info("Creating default card_5...")
     card_5 = Card(
-        name="Donovan Mitchell",
-        strength=35,
-        speed=40,
-        agility=40,
-        endurance=30,
-        intelligence=20,
+        name="G2 Paco",
+        strength=40,
+        speed=60,
+        agility=50,
+        endurance=10,
+        intelligence=10,
         category=CategoryEnum.rare
     )
 
+    mylogger.info("Creating default card_6...")
+    card_6 = Card(
+        name="Palomo",
+        strength=30,
+        speed=60,
+        agility=30,
+        endurance=60,
+        intelligence=0,
+        category=CategoryEnum.rare
+    )
+    mylogger.info("Creating default card_7...")
+    card_7 = Card(
+        name="Paloma",
+        strength=0,
+        speed=60,
+        agility=30,
+        endurance=60,
+        intelligence=30,
+        category=CategoryEnum.rare
+    )
+    mylogger.info("Creating default card_8...")
+    card_8 = Card(
+        name="Godzilla",
+        strength=99,
+        speed=20,
+        agility=10,
+        endurance=50,
+        intelligence=20,
+        category=CategoryEnum.legendary
+    )
+
+    mylogger.info("Creating default card_9...")
+    card_9 = Card(
+        name="R0-B0T",
+        strength=50,
+        speed=30,
+        agility=20,
+        endurance=50,
+        intelligence=95,
+        category=CategoryEnum.rare
+    )
+    mylogger.info("Creating default card_10...")
+    card_10 = Card(
+        name="Pato",
+        strength=20,
+        speed=60,
+        agility=60,
+        endurance=40,
+        intelligence=0,
+        category=CategoryEnum.common
+    )
+    mylogger.info("Creating default card_11...")
+    card_11 = Card(
+        name="Shrek",
+        strength=90,
+        speed=20,
+        agility=20,
+        endurance=75,
+        intelligence=30,
+        category=CategoryEnum.epic
+    )
+    mylogger.info("Creating default card_12...")
+    card_12 = Card(
+        name="Flash",
+        strength=30,
+        speed=80,
+        agility=75,
+        endurance=30,
+        intelligence=30,
+        category=CategoryEnum.rare
+    )
 # -------------------- CREATE ACHIEVEMENTS --------------------
     mylogger.info("Creating default achievements...")
     achievement_1 = Achievement(
