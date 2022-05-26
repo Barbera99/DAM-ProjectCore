@@ -74,6 +74,7 @@ class ResourceStartGame(DAMCoreResource):
     def on_post(self, req, resp, *args, **kwargs):
         super(ResourceStartGame, self).on_post(req, resp, *args, **kwargs)
         if "user_id" in kwargs:
+            mylogger.info(" Creant partida... ")
             game = Game()
             ug = User_Game_Association()
             ugia = User_Game_Association()
@@ -83,20 +84,19 @@ class ResourceStartGame(DAMCoreResource):
                 self.db_session.commit()
                 self.db_session.refresh(game)
                 try:
-                    ug.user_id = kwargs["user_id"]
+                    #IA
+                    ugia.user_id = req.media["user1_id"]
+                    ugia.score = req.media["user1_score"]
+
+                    #Usuari
                     ug.game_id = game.id
-                    ug.score = 0
-                    #ia
-                    ugia.user_id = 1
-                    ugia.game_id = game.id
-                    ugia.score = 0
+                    ug.user_id = kwargs["user2_id"]
+                    ug.score = req.media["user2_score"]
+
                     self.db_session.add(ug)
                     self.db_session.add(ugia)
                     self.db_session.commit()
-                    game_json = {
-                        "game_id": game.id
-                    }
-                    resp.media = game_json
+
                     resp.status = falcon.HTTP_200
                 except NoResultFound:
                     raise falcon.HTTPBadRequest(description=messages.game_not_found)
