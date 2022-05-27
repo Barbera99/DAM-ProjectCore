@@ -199,13 +199,12 @@ class User(SQLAlchemyBase, JSONModel):
     @hybrid_property
     def json_model(self):
         return {
-            "created_at": self.created_at.strftime(settings.DATETIME_DEFAULT_FORMAT),
+            #"created_at": self.created_at.strftime(settings.DATETIME_DEFAULT_FORMAT),
             "username": self.username,
             "email": self.email,
             "name": self.name,
             "surname": self.surname,
-            "birthdate": self.birthdate.strftime(
-                settings.DATE_DEFAULT_FORMAT) if self.birthdate is not None else self.birthdate,
+            #"birthdate": self.birthdate.strftime(settings.DATE_DEFAULT_FORMAT) if self.birthdate is not None else self.birthdate,
             "genere": self.genere.value,
             "phone": self.phone,
             "photo": self.photo_url
