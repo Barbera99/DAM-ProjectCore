@@ -24,9 +24,9 @@ class ResourceGetUserProfile(DAMCoreResource):
         super(ResourceGetUserProfile, self).on_get(req, resp, *args, **kwargs)
         mylogger.info("Obtenint perfil...")
 
-        if "username" in kwargs:
+        if "user_id" in kwargs:
             try:
-                aux_user = self.db_session.query(User).filter(User.username == kwargs["username"]).one()
+                aux_user = self.db_session.query(User).filter(User.id == kwargs["user_id"]).one()
                 resp.media = aux_user.public_profile
                 resp.status = falcon.HTTP_200
             except NoResultFound:

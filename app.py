@@ -46,7 +46,7 @@ application.add_route("/account/delete_token", account_resources.ResourceDeleteU
 application.add_route("/user/register", user_resources.ResourceRegisterUser()) # FET
 
 # get
-application.add_route("/user/{username}", user_resources.ResourceGetUserProfile()) # FET
+application.add_route("/user/{user_id}", user_resources.ResourceGetUserProfile()) # FET
 
 # put
 application.add_route("/user/profile/update/{user_id}", user_resources.ResourceUpdateUserProfile()) # Pendent de canviar el auth_user
