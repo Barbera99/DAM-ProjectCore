@@ -87,16 +87,14 @@ class ResourceStartGame(DAMCoreResource):
                     #IA
                     ugia.user_id = req.media["user1_id"]
                     ugia.score = req.media["user1_score"]
-
+                    ugia.game_id = game.id
                     #Usuari
                     ug.game_id = game.id
-                    ug.user_id = kwargs["user2_id"]
+                    ug.user_id = kwargs["user_id"]
                     ug.score = req.media["user2_score"]
-
                     self.db_session.add(ug)
                     self.db_session.add(ugia)
                     self.db_session.commit()
-
                     resp.status = falcon.HTTP_200
                 except NoResultFound:
                     raise falcon.HTTPBadRequest(description=messages.game_not_found)
@@ -105,25 +103,3 @@ class ResourceStartGame(DAMCoreResource):
         else:
             resp.status = falcon.HTTPBadRequest
 
-
-#@falcon.before(requires_auth)
-class ResourceEndGame(DAMCoreResource):
-    @jsonschema.validate(SchemaGameEnd)
-    def on_put(self, req, resp, *args, **kwargs):
-        super(ResourceEndGame, self).on_put(req, resp, *args, **kwargs)
-        try:
-            ug_arr = self.db_session.query(User_Game_Association).filter(User_Game_Association.game_id == kwargs["game_id"]).all()
-            ug1 = ug_arr[0]
-            ug2 = ug_arr[1]
-            if ug1.user_id == req.media["user1_id"]:
-                ug1.score = req.media["user1_score"]
-                ug2.score = req.media["user2_score"]
-            else:
-                ug2.score = req.media["user1_score"]
-                ug1.score = req.media["user2_score"]
-
-            self.db_session.commit()
-            resp.status = falcon.HTTP_200
-
-        except NoResultFound:
-            raise falcon.HTTPBadRequest(description=messages.game_not_found)
