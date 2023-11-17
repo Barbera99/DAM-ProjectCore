@@ -1,4 +1,4 @@
-#!/usr/bin/python
+ #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
 import logging.config
@@ -20,7 +20,10 @@ DB_PASSWORD = "1234"
 DB_ENCODING = "utf8"
 
 # i18n settings
-DEFAULT_LANGUAGE = "en"
+DEFAULT_LANGUAGE = "es"
+USE_I18N = True
+USE_L10N = True
+LANGUAGE_CODE = 'es_ES'
 CURRENT_LANGUAGE = None
 ACCEPTED_LANGUAGES = {"en": "en", "es": "es_ES", "es-ES": "es_ES", "ca-ES": "ca_ES"}
 LOCALE_DOMAIN = "damcore"

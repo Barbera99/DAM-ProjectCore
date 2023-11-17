@@ -8,6 +8,7 @@ import logging
 import os
 from builtins import getattr
 from urllib.parse import urljoin
+import gettext as _
 
 import falcon
 from passlib.hash import pbkdf2_sha256
@@ -347,15 +348,15 @@ class Card(SQLAlchemyBase, JSONModel):
     @hybrid_property
     def json_model(self):
         return {
-            "id": self.id,
-            "name": self.name,
-            "strength": self.strength,
-            "speed": self.speed,
-            "agility": self.agility,
-            "endurance": self.endurance,
-            "intelligence": self.intelligence,
-            "category": self.category.value,
-            "image": self.image_url
+            _('id'): self.id,
+            _("name"): self.name,
+            _("strength"): self.strength,
+            _("speed"): self.speed,
+            _("agility"): self.agility,
+            _("endurance"): self.endurance,
+            _("intelligence"): self.intelligence,
+            _("category"): self.category.value,
+            _("image"): self.image_url
         }
 
 class Map(SQLAlchemyBase, JSONModel):
